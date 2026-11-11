@@ -1,103 +1,290 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ClinicCare | Appointments</title>
-
+    <title>Appointments | ClinicCare</title>
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .page-heading h1 {
+            font-size: 28px;
+            margin: 0 0 7px;
+            color: #172b4d;
+        }
+
+        .page-heading p {
+            color: #7b8798;
+            margin: 0;
+        }
+
+        .primary-btn {
+            background: #087f8c;
+            color: white;
+            text-decoration: none;
+            padding: 12px 19px;
+            border-radius: 9px;
+            font-weight: 600;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+        }
+
+        .primary-btn:hover {
+            background: #066773;
+        }
+
+        .filter-panel, .table-panel {
+            background: white;
+            border-radius: 14px;
+            padding: 23px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 18px rgba(20, 40, 70, 0.05);
+        }
+
+        .panel-heading {
+            font-size: 17px;
+            font-weight: 700;
+            color: #23344d;
+            margin: 0 0 18px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-grid input, .filter-grid select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dce3eb;
+            border-radius: 8px;
+            background: #fff;
+            color: #34445c;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .filter-grid input:focus, .filter-grid select:focus {
+            border-color: #087f8c;
+        }
+
+        .filter-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .clear-btn {
+            border: 1px solid #dce3eb;
+            background: white;
+            color: #526176;
+            padding: 10px 17px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .result-count {
+            color: #7b8798;
+            font-size: 13px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .appointments-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
+        }
+
+        .appointments-table th {
+            text-align: left;
+            padding: 14px 12px;
+            color: #7b8798;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            background: #f7f9fc;
+        }
+
+        .appointments-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #edf0f4;
+            color: #34445c;
+            font-size: 13px;
+        }
+
+        .appointments-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .appointments-table a {
+            color: #087f8c;
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 9px;
+        }
+
+        .appointments-table button {
+            border: none;
+            background: none;
+            color: #d64b55;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .filter-grid {
+                grid-template-columns: repeat(2, minmax(140px, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
+<div class="dashboard-layout">
 
-<header class="topbar">
-
-    <h1>ClinicCare</h1>
-
-    <nav>
-        <a href="index.html">Dashboard</a>
-        <a class="active" href="appointments.html">Appointments</a>
-        <a href="add-appointment.html">Add Appointment</a>
-    </nav>
-
-</header>
-
-<main class="container">
-
-    <section class="welcome">
-
-        <div>
-            <p class="eyebrow">RECORD MANAGEMENT</p>
-            <h2>Appointments</h2>
-            <p>Search, filter and manage patient appointments.</p>
+    <aside class="sidebar">
+        <div class="brand">
+            <span>✚</span>
+            <h2>ClinicCare</h2>
         </div>
 
-        <a class="button" href="add-appointment.html">
-            + New Appointment
-        </a>
+        <p class="sidebar-label">MAIN MENU</p>
 
-    </section>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-link">
+                <span class="nav-icon">▦</span>
+                Dashboard
+            </a>
 
-    <section class="panel">
+            <a href="appointments.html" class="nav-link active">
+                <span class="nav-icon">▤</span>
+                Appointments
+            </a>
 
-        <div class="filters">
+            <a href="add-appointment.html" class="nav-link">
+                <span class="nav-icon">＋</span>
+                Add Appointment
+            </a>
+        </nav>
 
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="Search ID or patient name"
-            >
+        <div class="sidebar-bottom">
+            <p>Clinic Appointment</p>
+            <small>Management System</small>
+        </div>
+    </aside>
 
-            <select id="doctorFilter">
-                <option value="">All Doctors</option>
-                <option>Dr. Meera Sharma</option>
-                <option>Dr. Rahul Patil</option>
-                <option>Dr. Neha Rao</option>
-            </select>
+    <main class="main-content">
 
-            <input type="date" id="dateFilter">
+        <div class="page-heading">
+            <div>
+                <h1>Appointments</h1>
+                <p>Manage and monitor all patient appointments.</p>
+            </div>
 
-            <select id="statusFilter">
-                <option value="">All Statuses</option>
-                <option>Scheduled</option>
-                <option>Completed</option>
-                <option>Cancelled</option>
-            </select>
-
-            <select id="sortFilter">
-                <option value="asc">Oldest First</option>
-                <option value="desc">Newest First</option>
-            </select>
-
-            <button
-                class="button secondary"
-                id="clearFilters"
-                type="button"
-            >
-                Clear Filters
-            </button>
-
+            <a href="add-appointment.html" class="primary-btn">
+                + Add Appointment
+            </a>
         </div>
 
-        <div class="panel-heading">
+        <section class="filter-panel">
+            <h3 class="panel-heading">Search and Filter</h3>
 
-            <h3>Appointment Records</h3>
+            <div class="filter-grid">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search ID or patient name"
+                >
 
-            <span id="resultCount">Loading...</span>
+                <select id="doctorFilter">
+                    <option value="">All Doctors</option>
+                    <option value="Dr. Meera Sharma">Dr. Meera Sharma</option>
+                    <option value="Dr. Rajesh Patil">Dr. Rajesh Patil</option>
+                    <option value="Dr. Ananya Rao">Dr. Ananya Rao</option>
+                    <option value="Dr. Vikram Desai">Dr. Vikram Desai</option>
+                </select>
 
-        </div>
+                <input type="date" id="dateFilter">
 
-        <div id="appointmentsTable" class="table-wrap">
-            Loading appointments...
-        </div>
+                <select id="statusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
 
-    </section>
+                <select id="sortFilter">
+                    <option value="asc">Oldest First</option>
+                    <option value="desc">Newest First</option>
+                </select>
+            </div>
 
-</main>
+            <div class="filter-actions">
+                <span class="result-count" id="resultCount">
+                    Loading appointments...
+                </span>
+
+                <button class="clear-btn" id="clearFilters" type="button">
+                    Clear Filters
+                </button>
+            </div>
+        </section>
+
+        <section class="table-panel">
+            <h3 class="panel-heading">All Appointments</h3>
+
+            <div class="table-wrapper">
+                <table class="appointments-table">
+                    <thead>
+                        <tr>
+                            <th>Appointment ID</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="appointmentsTable">
+                        <tr>
+                            <td colspan="7">Loading appointments...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+</div>
 
 <script src="js/appointment.js"></script>
-
 </body>
 </html>

@@ -1,135 +1,285 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ClinicCare | Appointment Form</title>
-
+    <title>Add Appointment | ClinicCare</title>
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .page-heading {
+            margin-bottom: 28px;
+        }
+
+        .page-heading h1 {
+            font-size: 28px;
+            margin: 0 0 7px;
+            color: #172b4d;
+        }
+
+        .page-heading p {
+            color: #7b8798;
+            margin: 0;
+        }
+
+        .form-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 900px;
+            box-shadow: 0 4px 18px rgba(20, 40, 70, 0.05);
+        }
+
+        .form-section-title {
+            color: #23344d;
+            font-size: 17px;
+            font-weight: 700;
+            margin: 0 0 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            color: #42536b;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dce3eb;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #34445c;
+            background: white;
+            outline: none;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #087f8c;
+            box-shadow: 0 0 0 3px rgba(8, 127, 140, .08);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        .save-btn {
+            background: #087f8c;
+            color: white;
+            border: none;
+            padding: 13px 23px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background: #066773;
+        }
+
+        .cancel-btn {
+            background: #f2f5f8;
+            color: #526176;
+            border: 1px solid #e1e6ed;
+            padding: 13px 23px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        #formMessage {
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 650px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .form-panel {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+<div class="dashboard-layout">
 
-<header class="topbar">
-
-    <h1>ClinicCare</h1>
-
-    <nav>
-        <a href="index.html">Dashboard</a>
-        <a href="appointments.html">Appointments</a>
-        <a class="active" href="add-appointment.html">Add Appointment</a>
-    </nav>
-
-</header>
-
-<main class="container narrow">
-
-    <section class="welcome">
-
-        <div>
-            <p class="eyebrow">APPOINTMENT MANAGEMENT</p>
-            <h2 id="formTitle">Add New Appointment</h2>
-            <p>Enter the patient and appointment details.</p>
+    <aside class="sidebar">
+        <div class="brand">
+            <span>✚</span>
+            <h2>ClinicCare</h2>
         </div>
 
-    </section>
+        <p class="sidebar-label">MAIN MENU</p>
 
-    <section class="panel">
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-link">
+                <span class="nav-icon">▦</span>
+                Dashboard
+            </a>
 
-        <form id="appointmentForm" class="form-grid">
+            <a href="appointments.html" class="nav-link">
+                <span class="nav-icon">▤</span>
+                Appointments
+            </a>
 
-            <label>
-                Appointment ID
-                <input
-                    type="text"
-                    name="appointmentId"
-                    id="appointmentId"
-                    placeholder="APT016"
-                    required
-                >
-            </label>
+            <a href="add-appointment.html" class="nav-link active">
+                <span class="nav-icon">＋</span>
+                Add Appointment
+            </a>
+        </nav>
 
-            <label>
-                Patient Name
-                <input
-                    type="text"
-                    name="patientName"
-                    placeholder="Enter patient name"
-                    required
-                >
-            </label>
+        <div class="sidebar-bottom">
+            <p>Clinic Appointment</p>
+            <small>Management System</small>
+        </div>
+    </aside>
 
-            <label>
-                Doctor Name
-                <select name="doctorName" required>
-                    <option value="">Select Doctor</option>
-                    <option>Dr. Meera Sharma</option>
-                    <option>Dr. Rahul Patil</option>
-                    <option>Dr. Neha Rao</option>
-                </select>
-            </label>
+    <main class="main-content">
 
-            <label>
-                Appointment Date
-                <input
-                    type="date"
-                    name="appointmentDate"
-                    required
-                >
-            </label>
+        <div class="page-heading">
+            <h1 id="formTitle">Add New Appointment</h1>
+            <p>Enter patient and appointment information below.</p>
+        </div>
 
-            <label>
-                Appointment Time
-                <input
-                    type="time"
-                    name="appointmentTime"
-                    required
-                >
-            </label>
+        <section class="form-panel">
 
-            <label>
-                Appointment Status
-                <select name="status" required>
-                    <option value="Scheduled">Scheduled</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Cancelled">Cancelled</option>
-                </select>
-            </label>
+            <h3 class="form-section-title">Appointment Information</h3>
 
-            <label class="full">
-                Reason for Visit
-                <textarea
-                    name="reason"
-                    rows="4"
-                    placeholder="Enter reason for appointment"
-                    required
-                ></textarea>
-            </label>
+            <form id="appointmentForm">
 
-            <div class="full form-actions">
+                <div class="form-grid">
 
-                <button type="submit" class="button" id="saveButton">
-                    Save Appointment
-                </button>
+                    <div class="form-group">
+                        <label for="appointmentId">Appointment ID</label>
+                        <input
+                            type="text"
+                            id="appointmentId"
+                            name="appointmentId"
+                            placeholder="Example: APT016"
+                            required
+                        >
+                    </div>
 
-                <a href="appointments.html" class="button secondary">
-                    Cancel
-                </a>
+                    <div class="form-group">
+                        <label for="patientName">Patient Name</label>
+                        <input
+                            type="text"
+                            id="patientName"
+                            name="patientName"
+                            placeholder="Enter patient name"
+                            required
+                        >
+                    </div>
 
-            </div>
+                    <div class="form-group">
+                        <label for="doctorName">Doctor</label>
+                        <select id="doctorName" name="doctorName" required>
+                            <option value="">Select Doctor</option>
+                            <option value="Dr. Meera Sharma">Dr. Meera Sharma</option>
+                            <option value="Dr. Rajesh Patil">Dr. Rajesh Patil</option>
+                            <option value="Dr. Ananya Rao">Dr. Ananya Rao</option>
+                            <option value="Dr. Vikram Desai">Dr. Vikram Desai</option>
+                        </select>
+                    </div>
 
-            <p id="formMessage" class="full"></p>
+                    <div class="form-group">
+                        <label for="appointmentDate">Appointment Date</label>
+                        <input
+                            type="date"
+                            id="appointmentDate"
+                            name="appointmentDate"
+                            required
+                        >
+                    </div>
 
-        </form>
+                    <div class="form-group">
+                        <label for="appointmentTime">Appointment Time</label>
+                        <input
+                            type="time"
+                            id="appointmentTime"
+                            name="appointmentTime"
+                            required
+                        >
+                    </div>
 
-    </section>
+                    <div class="form-group">
+                        <label for="status">Appointment Status</label>
+                        <select id="status" name="status" required>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
 
-</main>
+                    <div class="form-group full-width">
+                        <label for="reason">Reason for Appointment</label>
+                        <textarea
+                            id="reason"
+                            name="reason"
+                            placeholder="Describe the reason for the appointment..."
+                            required
+                        ></textarea>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="save-btn" id="saveButton">
+                        Save Appointment
+                    </button>
+
+                    <a href="appointments.html" class="cancel-btn">
+                        Cancel
+                    </a>
+                </div>
+
+                <div id="formMessage"></div>
+
+            </form>
+        </section>
+
+    </main>
+</div>
 
 <script src="js/form.js"></script>
-
 </body>
 </html>

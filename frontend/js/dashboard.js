@@ -651,14 +651,8 @@ function createDoctorChart(appointments) {
 
 }
 
-
-
-
 updateDate();
 
 loadDashboard();
-
-
-// Refresh dashboard data every 30 seconds
 
 setInterval(loadDashboard, 30000);
