@@ -1,0 +1,268 @@
+
+:root {
+    font-family: Arial, sans-serif;
+    color: #1f2937;
+    background: #f4f7fb;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+.topbar {
+    background: white;
+    border-bottom: 1px solid #e5eaf1;
+    padding: 18px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.topbar h1 {
+    color: #176b87;
+    font-size: 23px;
+}
+
+.topbar nav {
+    display: flex;
+    gap: 22px;
+}
+
+.topbar a {
+    color: #667085;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.topbar a.active {
+    color: #087e9b;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 1180px;
+    margin: 38px auto;
+    padding: 0 22px;
+}
+
+.welcome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.welcome h2 {
+    font-size: 29px;
+}
+
+.welcome p {
+    color: #667085;
+}
+
+.eyebrow {
+    color: #0783a0 !important;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+}
+
+.button {
+    display: inline-block;
+    background: #087e9b;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 17px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.button:hover {
+    background: #06657d;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.stat, .panel {
+    background: white;
+    border: 1px solid #e8edf3;
+    border-radius: 12px;
+    padding: 21px;
+}
+
+.stat span {
+    color: #667085;
+    font-size: 13px;
+}
+
+.stat strong {
+    display: block;
+    font-size: 29px;
+    margin-top: 10px;
+    color: #176b87;
+}
+
+.panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.panel-heading a {
+    color: #087e9b;
+    text-decoration: none;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #edf0f4;
+    font-size: 14px;
+}
+
+th {
+    color: #667085;
+    background: #f8fafc;
+}
+
+@media (max-width: 750px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .topbar {
+        flex-direction: column;
+    }
+
+    .welcome {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 450px) {
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.filters input,
+.filters select,
+.form-grid input,
+.form-grid select,
+.form-grid textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dce3eb;
+    border-radius: 7px;
+    background: white;
+    font-size: 14px;
+    outline: none;
+}
+
+.filters input:focus,
+.filters select:focus {
+    border-color: #087e9b;
+}
+
+.secondary {
+    background: #edf2f7;
+    color: #344054;
+}
+
+.secondary:hover {
+    background: #dce5ee;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.action-buttons a,
+.action-buttons button {
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.view-btn {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.edit-btn {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.status {
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-Scheduled {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-Completed {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-Cancelled {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+@media (max-width: 750px) {
+    .filters {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 450px) {
+    .filters {
+        grid-template-columns: 1fr;
+    }
+}

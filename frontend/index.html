@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ClinicCare | Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <h1>ClinicCare</h1>
+
+        <nav>
+            <a class="active" href="index.html">Dashboard</a>
+            <a href="appointments.html">Appointments</a>
+            <a href="add-appointment.html">Add Appointment</a>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <section class="welcome">
+            <div>
+                <p class="eyebrow">CLINIC MANAGEMENT</p>
+                <h2>Appointment Dashboard</h2>
+                <p>Manage patient appointments in one place.</p>
+            </div>
+
+            <a class="button" href="add-appointment.html">
+                + New Appointment
+            </a>
+        </section>
+
+        <section class="stats">
+
+            <article class="stat">
+                <span>Total Appointments</span>
+                <strong id="totalCount">0</strong>
+            </article>
+
+            <article class="stat">
+                <span>Scheduled</span>
+                <strong id="scheduledCount">0</strong>
+            </article>
+
+            <article class="stat">
+                <span>Completed</span>
+                <strong id="completedCount">0</strong>
+            </article>
+
+            <article class="stat">
+                <span>Cancelled</span>
+                <strong id="cancelledCount">0</strong>
+            </article>
+
+        </section>
+
+        <section class="panel">
+
+            <div class="panel-heading">
+                <h3>Recent Appointments</h3>
+
+                <a href="appointments.html">View all</a>
+            </div>
+
+            <div id="recentAppointments" class="table-wrap">
+                Loading appointments...
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="js/dashboard.js"></script>
+
+</body>
+</html>

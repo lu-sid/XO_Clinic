@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClinicCare | Appointments</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="topbar">
+    <h1>ClinicCare</h1>
+
+    <nav>
+        <a href="index.html">Dashboard</a>
+        <a class="active" href="appointments.html">Appointments</a>
+        <a href="add-appointment.html">Add Appointment</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="welcome">
+        <div>
+            <p class="eyebrow">RECORD MANAGEMENT</p>
+            <h2>Appointments</h2>
+            <p>Search, filter and manage patient appointments.</p>
+        </div>
+
+        <a class="button" href="add-appointment.html">
+            + New Appointment
+        </a>
+    </section>
+
+    <section class="panel">
+
+        <div class="filters">
+            <input type="text" id="searchInput"
+                   placeholder="Search ID or patient name">
+
+            <select id="doctorFilter">
+                <option value="">All Doctors</option>
+                <option>Dr. Meera Sharma</option>
+                <option>Dr. Rahul Patil</option>
+                <option>Dr. Neha Rao</option>
+            </select>
+
+            <input type="date" id="dateFilter">
+
+            <select id="statusFilter">
+                <option value="">All Statuses</option>
+                <option>Scheduled</option>
+                <option>Completed</option>
+                <option>Cancelled</option>
+            </select>
+
+            <select id="sortFilter">
+                <option value="asc">Oldest First</option>
+                <option value="desc">Newest First</option>
+            </select>
+
+            <button class="button secondary" id="clearFilters">
+                Clear Filters
+            </button>
+        </div>
+
+        <div class="panel-heading">
+            <h3>Appointment Records</h3>
+            <span id="resultCount">0 records</span>
+        </div>
+
+        <div id="appointmentsTable" class="table-wrap">
+            Loading appointments...
+        </div>
+
+    </section>
+
+</main>
+
+<script src="js/appointments.js"></script>
+
+</body>
+</html>
