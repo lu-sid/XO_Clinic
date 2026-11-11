@@ -1,82 +1,338 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>ClinicCare | Dashboard</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-    <header class="topbar">
-        <h1>ClinicCare</h1>
+<div class="dashboard-layout">
 
-        <nav>
-            <a class="active" href="index.html">Dashboard</a>
-            <a href="appointments.html">Appointments</a>
-            <a href="add-appointment.html">Add Appointment</a>
-        </nav>
-    </header>
+    <!-- SIDEBAR -->
 
-    <main class="container">
+    <aside class="sidebar">
 
-        <section class="welcome">
-            <div>
-                <p class="eyebrow">CLINIC MANAGEMENT</p>
-                <h2>Appointment Dashboard</h2>
-                <p>Manage patient appointments in one place.</p>
+        <div class="brand">
+            <div class="brand-icon">✚</div>
+            <div class="brand-name">
+                Clinic<span>Care</span>
+                <small>MANAGEMENT SYSTEM</small>
             </div>
+        </div>
 
-            <a class="button" href="add-appointment.html">
-                + New Appointment
+        <div class="sidebar-label">MAIN MENU</div>
+
+        <nav class="sidebar-nav">
+
+            <a href="index.html" class="nav-link active">
+                <span class="nav-icon">▦</span>
+                <span>Dashboard</span>
             </a>
-        </section>
 
-        <section class="stats">
+            <a href="appointments.html" class="nav-link">
+                <span class="nav-icon">▤</span>
+                <span>Appointments</span>
+            </a>
 
-            <article class="stat">
-                <span>Total Appointments</span>
-                <strong id="totalCount">0</strong>
-            </article>
+            <a href="add-appointment.html" class="nav-link">
+                <span class="nav-icon">＋</span>
+                <span>New Appointment</span>
+            </a>
 
-            <article class="stat">
-                <span>Scheduled</span>
-                <strong id="scheduledCount">0</strong>
-            </article>
+        </nav>
 
-            <article class="stat">
-                <span>Completed</span>
-                <strong id="completedCount">0</strong>
-            </article>
+        <div class="sidebar-label">SYSTEM</div>
 
-            <article class="stat">
-                <span>Cancelled</span>
-                <strong id="cancelledCount">0</strong>
-            </article>
+        <nav class="sidebar-nav">
 
-        </section>
+            <a href="appointments.html" class="nav-link">
+                <span class="nav-icon">⌕</span>
+                <span>Find Patients</span>
+            </a>
 
-        <section class="panel">
+        </nav>
 
-            <div class="panel-heading">
-                <h3>Recent Appointments</h3>
+        <div class="sidebar-bottom">
 
-                <a href="appointments.html">View all</a>
+            <div class="sidebar-help-icon">✦</div>
+
+            <div>
+                <strong>ClinicCare</strong>
+                <p>Clinic Management</p>
             </div>
 
-            <div id="recentAppointments" class="table-wrap">
-                Loading appointments...
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <!-- TOP HEADER -->
+
+        <header class="dashboard-header">
+
+            <div>
+                <p class="header-date" id="currentDate"></p>
+                <h2>Dashboard Overview</h2>
+                <p class="header-subtitle">
+                    Welcome back! Here's what's happening at your clinic.
+                </p>
+            </div>
+
+            <div class="header-actions">
+
+                <div class="system-status">
+                    <span class="online-dot"></span>
+                    System Online
+                </div>
+
+                <a href="add-appointment.html" class="primary-button">
+                    <span>＋</span> New Appointment
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- STATISTICS -->
+
+        <section class="stats-grid">
+
+            <article class="dashboard-stat">
+
+                <div class="stat-top">
+                    <div class="stat-icon total-icon">▤</div>
+                    <span class="stat-tag">ALL RECORDS</span>
+                </div>
+
+                <p>Total Appointments</p>
+
+                <h3 id="totalCount">--</h3>
+
+                <div class="stat-footer">
+                    <span>◈</span> All appointment records
+                </div>
+
+            </article>
+
+
+            <article class="dashboard-stat">
+
+                <div class="stat-top">
+                    <div class="stat-icon scheduled-icon">◷</div>
+                    <span class="stat-tag">UPCOMING</span>
+                </div>
+
+                <p>Scheduled</p>
+
+                <h3 id="scheduledCount">--</h3>
+
+                <div class="stat-footer">
+                    <span>◈</span> Awaiting consultation
+                </div>
+
+            </article>
+
+
+            <article class="dashboard-stat">
+
+                <div class="stat-top">
+                    <div class="stat-icon completed-icon">✓</div>
+                    <span class="stat-tag">FINISHED</span>
+                </div>
+
+                <p>Completed</p>
+
+                <h3 id="completedCount">--</h3>
+
+                <div class="stat-footer">
+                    <span>◈</span> Consultations completed
+                </div>
+
+            </article>
+
+
+            <article class="dashboard-stat">
+
+                <div class="stat-top">
+                    <div class="stat-icon cancelled-icon">×</div>
+                    <span class="stat-tag">CANCELLED</span>
+                </div>
+
+                <p>Cancelled</p>
+
+                <h3 id="cancelledCount">--</h3>
+
+                <div class="stat-footer">
+                    <span>◈</span> Cancelled appointments
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- CHARTS -->
+
+        <section class="charts-grid">
+
+            <article class="dashboard-card activity-card">
+
+                <div class="card-heading">
+                    <div>
+                        <h3>Appointment Activity</h3>
+                        <p>Appointments grouped by date</p>
+                    </div>
+
+                    <span class="chart-label">DATE OVERVIEW</span>
+                </div>
+
+                <div class="chart-container activity-chart">
+                    <canvas id="activityChart"></canvas>
+                </div>
+
+            </article>
+
+
+            <article class="dashboard-card distribution-card">
+
+                <div class="card-heading">
+                    <div>
+                        <h3>Appointment Status</h3>
+                        <p>Distribution by status</p>
+                    </div>
+                </div>
+
+                <div class="chart-container doughnut-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+
+                <div class="chart-legend">
+
+                    <div>
+                        <span class="legend-dot scheduled-dot"></span>
+                        Scheduled
+                        <strong id="legendScheduled">0</strong>
+                    </div>
+
+                    <div>
+                        <span class="legend-dot completed-dot"></span>
+                        Completed
+                        <strong id="legendCompleted">0</strong>
+                    </div>
+
+                    <div>
+                        <span class="legend-dot cancelled-dot"></span>
+                        Cancelled
+                        <strong id="legendCancelled">0</strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- DOCTOR CHART -->
+
+        <section class="dashboard-card doctor-card">
+
+            <div class="card-heading">
+                <div>
+                    <h3>Doctor-wise Appointments</h3>
+                    <p>Number of appointments assigned to each doctor</p>
+                </div>
+
+                <span class="chart-label">DOCTOR STATISTICS</span>
+            </div>
+
+            <div class="chart-container doctor-chart">
+                <canvas id="doctorChart"></canvas>
             </div>
 
         </section>
+
+
+        <!-- RECENT APPOINTMENTS -->
+
+        <section class="dashboard-card recent-card">
+
+            <div class="card-heading">
+
+                <div>
+                    <h3>Recent Appointments</h3>
+                    <p>Latest patient appointment records</p>
+                </div>
+
+                <a href="appointments.html" class="view-all">
+                    View all appointments →
+                </a>
+
+            </div>
+
+            <div class="table-wrap">
+
+                <table class="dashboard-table">
+
+                    <thead>
+                        <tr>
+                            <th>APPOINTMENT</th>
+                            <th>PATIENT</th>
+                            <th>DOCTOR</th>
+                            <th>DATE</th>
+                            <th>STATUS</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="recentAppointments">
+
+                        <tr>
+                            <td colspan="6" class="loading-cell">
+                                Loading appointments...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+            <span>© 2026 ClinicCare</span>
+            <span>Clinic Appointment Management System</span>
+        </footer>
 
     </main>
 
-    <script src="js/dashboard.js"></script>
+</div>
+
+<script src="js/dashboard.js"></script>
 
 </body>
 </html>
