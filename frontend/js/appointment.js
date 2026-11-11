@@ -1,6 +1,7 @@
 
 const API_URL = 'http://localhost:5000/api/appointments';
 
+// DOM elements
 const searchInput = document.getElementById('searchInput');
 const doctorFilter = document.getElementById('doctorFilter');
 const dateFilter = document.getElementById('dateFilter');
@@ -10,6 +11,7 @@ const sortFilter = document.getElementById('sortFilter');
 const tableContainer = document.getElementById('appointmentsTable');
 const resultCount = document.getElementById('resultCount');
 
+// Prevent HTML injection when displaying text
 function escapeHTML(value) {
     return String(value ?? '').replace(/[&<>"']/g, char => ({
         '&': '&amp;',
@@ -20,10 +22,14 @@ function escapeHTML(value) {
     })[char]);
 }
 
-// Fetch appointments using selected filters
+
+// LOAD APPOINTMENTS
 async function loadAppointments() {
 
+    tableContainer.textContent = 'Loading appointments...';
+
     try {
+
         const params = new URLSearchParams();
 
         if (searchInput.value.trim()) {
@@ -44,29 +50,41 @@ async function loadAppointments() {
 
         params.set('sort', sortFilter.value);
 
-        const response = await fetch(`${API_URL}?${params.toString()}`);
+        const response = await fetch(
+            `${API_URL}?${params.toString()}`
+        );
 
         if (!response.ok) {
-            throw new Error('Unable to fetch appointments');
+            throw new Error(`Server error: ${response.status}`);
         }
 
         const data = await response.json();
 
-        displayAppointments(data.appointments);
+        displayAppointments(data.appointments || []);
 
     } catch (error) {
-        tableContainer.textContent = 'Error loading appointments. Please try again.';
+
+        console.error('Appointment loading error:', error);
+
+        resultCount.textContent = 'Error';
+
+        tableContainer.textContent =
+            'Unable to load appointments. Check the server connection.';
+
     }
 }
 
-// Display appointments in table
+
+// DISPLAY APPOINTMENTS
 function displayAppointments(appointments) {
 
     resultCount.textContent = `${appointments.length} records`;
 
     if (appointments.length === 0) {
+
         tableContainer.innerHTML =
             '<p class="muted">No matching appointments found.</p>';
+
         return;
     }
 
@@ -77,16 +95,23 @@ function displayAppointments(appointments) {
 
         return `
             <tr>
+
                 <td>${escapeHTML(a.appointmentId)}</td>
+
                 <td>${escapeHTML(a.patientName)}</td>
+
                 <td>${escapeHTML(a.doctorName)}</td>
+
                 <td>${date}</td>
+
                 <td>${escapeHTML(a.appointmentTime)}</td>
+
                 <td>
                     <span class="status status-${escapeHTML(a.status)}">
                         ${escapeHTML(a.status)}
                     </span>
                 </td>
+
                 <td>
                     <div class="action-buttons">
 
@@ -100,19 +125,24 @@ function displayAppointments(appointments) {
                            Edit
                         </a>
 
-                        <button class="delete-btn"
-                           onclick="deleteAppointment('${encodeURIComponent(a.appointmentId)}')">
-                           Delete
+                        <button
+                            class="delete-btn"
+                            data-id="${escapeHTML(a.appointmentId)}"
+                            type="button">
+                            Delete
                         </button>
 
                     </div>
                 </td>
+
             </tr>
         `;
+
     }).join('');
 
     tableContainer.innerHTML = `
         <table>
+
             <thead>
                 <tr>
                     <th>ID</th>
@@ -124,50 +154,80 @@ function displayAppointments(appointments) {
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>${rows}</tbody>
+
+            <tbody>
+                ${rows}
+            </tbody>
+
         </table>
     `;
+
 }
 
-// Delete appointment
-async function deleteAppointment(id) {
 
-    const appointmentId = decodeURIComponent(id);
+// DELETE APPOINTMENT
+async function deleteAppointment(appointmentId) {
 
     const confirmDelete = confirm(
-        `Are you sure you want to delete ${appointmentId}?`
+        `Are you sure you want to delete appointment ${appointmentId}?`
     );
 
     if (!confirmDelete) return;
 
     try {
+
         const response = await fetch(
             `${API_URL}/${encodeURIComponent(appointmentId)}`,
-            { method: 'DELETE' }
+            {
+                method: 'DELETE'
+            }
         );
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message);
+            throw new Error(data.message || 'Delete failed');
         }
 
-        alert(data.message);
+        alert('Appointment deleted successfully!');
+
         loadAppointments();
 
     } catch (error) {
+
+        console.error('Delete error:', error);
+
         alert(error.message || 'Unable to delete appointment.');
+
     }
 }
 
-// Filter event listeners
+
+// HANDLE DELETE BUTTONS
+tableContainer.addEventListener('click', function(event) {
+
+    const button = event.target.closest('.delete-btn');
+
+    if (!button) return;
+
+    deleteAppointment(button.dataset.id);
+
+});
+
+
+// SEARCH AND FILTER EVENTS
 searchInput.addEventListener('input', loadAppointments);
+
 doctorFilter.addEventListener('change', loadAppointments);
+
 dateFilter.addEventListener('change', loadAppointments);
+
 statusFilter.addEventListener('change', loadAppointments);
+
 sortFilter.addEventListener('change', loadAppointments);
 
-// Clear all filters
+
+// CLEAR FILTERS
 document.getElementById('clearFilters').addEventListener('click', () => {
 
     searchInput.value = '';
@@ -177,7 +237,9 @@ document.getElementById('clearFilters').addEventListener('click', () => {
     sortFilter.value = 'asc';
 
     loadAppointments();
+
 });
 
-// Initial loading
+
+// INITIAL LOAD
 loadAppointments();

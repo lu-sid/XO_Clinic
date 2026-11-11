@@ -266,3 +266,131 @@ th {
         grid-template-columns: 1fr;
     }
 }
+
+/* Appointment Form */
+
+.narrow {
+    max-width: 850px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #344054;
+}
+
+.form-grid input,
+.form-grid select,
+.form-grid textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dce3eb;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.form-grid input:focus,
+.form-grid select:focus,
+.form-grid textarea:focus {
+    outline: none;
+    border-color: #087e9b;
+}
+
+.form-grid textarea {
+    resize: vertical;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+}
+
+#formMessage {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.success-message {
+    color: #15803d;
+}
+
+.error-message {
+    color: #dc2626;
+}
+
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+}
+
+/* Appointment Details */
+
+.details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.details-header h3 {
+    color: #176b87;
+    font-size: 21px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+}
+
+.detail-item {
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.detail-item span {
+    display: block;
+    color: #667085;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.detail-item strong {
+    color: #1f2937;
+    font-size: 15px;
+}
+
+.details-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}

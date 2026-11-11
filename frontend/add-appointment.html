@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ClinicCare | Appointment Form</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <h1>ClinicCare</h1>
+
+    <nav>
+        <a href="index.html">Dashboard</a>
+        <a href="appointments.html">Appointments</a>
+        <a class="active" href="add-appointment.html">Add Appointment</a>
+    </nav>
+
+</header>
+
+<main class="container narrow">
+
+    <section class="welcome">
+
+        <div>
+            <p class="eyebrow">APPOINTMENT MANAGEMENT</p>
+            <h2 id="formTitle">Add New Appointment</h2>
+            <p>Enter the patient and appointment details.</p>
+        </div>
+
+    </section>
+
+    <section class="panel">
+
+        <form id="appointmentForm" class="form-grid">
+
+            <label>
+                Appointment ID
+                <input
+                    type="text"
+                    name="appointmentId"
+                    id="appointmentId"
+                    placeholder="APT016"
+                    required
+                >
+            </label>
+
+            <label>
+                Patient Name
+                <input
+                    type="text"
+                    name="patientName"
+                    placeholder="Enter patient name"
+                    required
+                >
+            </label>
+
+            <label>
+                Doctor Name
+                <select name="doctorName" required>
+                    <option value="">Select Doctor</option>
+                    <option>Dr. Meera Sharma</option>
+                    <option>Dr. Rahul Patil</option>
+                    <option>Dr. Neha Rao</option>
+                </select>
+            </label>
+
+            <label>
+                Appointment Date
+                <input
+                    type="date"
+                    name="appointmentDate"
+                    required
+                >
+            </label>
+
+            <label>
+                Appointment Time
+                <input
+                    type="time"
+                    name="appointmentTime"
+                    required
+                >
+            </label>
+
+            <label>
+                Appointment Status
+                <select name="status" required>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </label>
+
+            <label class="full">
+                Reason for Visit
+                <textarea
+                    name="reason"
+                    rows="4"
+                    placeholder="Enter reason for appointment"
+                    required
+                ></textarea>
+            </label>
+
+            <div class="full form-actions">
+
+                <button type="submit" class="button" id="saveButton">
+                    Save Appointment
+                </button>
+
+                <a href="appointments.html" class="button secondary">
+                    Cancel
+                </a>
+
+            </div>
+
+            <p id="formMessage" class="full"></p>
+
+        </form>
+
+    </section>
+
+</main>
+
+<script src="js/form.js"></script>
+
+</body>
+</html>
