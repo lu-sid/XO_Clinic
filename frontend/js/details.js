@@ -1,163 +1,215 @@
 
-const API_URL = 'http://localhost:5000/api/appointments';
+const API_URL = "http://localhost:5000/api/appointments";
 
-const detailsContainer =
-    document.getElementById('appointmentDetails');
+const detailsContainer = document.getElementById("appointmentDetails");
 
 const params = new URLSearchParams(window.location.search);
-const appointmentId = params.get('id');
+const appointmentId = params.get("id");
 
-function escapeHTML(value) {
-    return String(value ?? '').replace(/[&<>"']/g, char => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-    })[char]);
+// Format date for display
+function formatDate(dateString) {
+    if (!dateString) return "Not available";
+
+    const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) return "Not available";
+
+    return date.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
 }
 
+// Prevent HTML injection
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[character]);
+}
 
-// LOAD APPOINTMENT DETAILS
+// Load appointment details
 async function loadAppointmentDetails() {
 
     if (!appointmentId) {
-        detailsContainer.textContent =
-            'No appointment ID was provided.';
+        detailsContainer.innerHTML = `
+            <div class="error-message">
+                <h3>Appointment ID Missing</h3>
+                <p>No appointment ID was provided.</p>
+                <a href="appointments.html">Return to Appointments</a>
+            </div>
+        `;
         return;
     }
 
     try {
-
         const response = await fetch(
             `${API_URL}/${encodeURIComponent(appointmentId)}`
         );
 
         if (!response.ok) {
-            throw new Error('Appointment not found.');
+            throw new Error("Appointment not found.");
         }
 
-        const a = await response.json();
+        const result = await response.json();
 
-        const formattedDate = new Date(a.appointmentDate)
-            .toLocaleDateString('en-IN', {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric'
-            });
+        // Supports either a direct appointment or wrapped API response
+        const appointment =
+            result.appointment ||
+            result.data ||
+            result;
+
+        if (!appointment || !appointment.appointmentId) {
+            throw new Error("Invalid appointment data.");
+        }
+
+        displayAppointment(appointment);
+
+    } catch (error) {
+        console.error("Error loading appointment:", error);
 
         detailsContainer.innerHTML = `
-
-            <div class="details-header">
-
-                <h3>${escapeHTML(a.appointmentId)}</h3>
-
-                <span class="status status-${escapeHTML(a.status)}">
-                    ${escapeHTML(a.status)}
-                </span>
-
+            <div class="error-message">
+                <h3>Unable to Load Appointment</h3>
+                <p>${escapeHTML(error.message)}</p>
+                <a href="appointments.html">Return to Appointments</a>
             </div>
+        `;
+    }
+}
+
+// Display appointment information
+function displayAppointment(appointment) {
+
+    const status = appointment.status || "Scheduled";
+
+    detailsContainer.innerHTML = `
+
+        <div class="details-header">
+
+            <div>
+                <h2>Appointment Overview</h2>
+                <p>Appointment ID: ${escapeHTML(appointment.appointmentId)}</p>
+            </div>
+
+            <span class="status-badge status-${escapeHTML(status)}">
+                ${escapeHTML(status)}
+            </span>
+
+        </div>
+
+        <div class="details-section">
+
+            <h3>Patient and Doctor Information</h3>
 
             <div class="details-grid">
 
                 <div class="detail-item">
-                    <span>Patient Name</span>
-                    <strong>${escapeHTML(a.patientName)}</strong>
+                    <div class="detail-label">Patient Name</div>
+                    <div class="detail-value">
+                        ${escapeHTML(appointment.patientName)}
+                    </div>
                 </div>
 
                 <div class="detail-item">
-                    <span>Doctor Name</span>
-                    <strong>${escapeHTML(a.doctorName)}</strong>
+                    <div class="detail-label">Doctor Name</div>
+                    <div class="detail-value">
+                        ${escapeHTML(appointment.doctorName)}
+                    </div>
                 </div>
 
                 <div class="detail-item">
-                    <span>Appointment Date</span>
-                    <strong>${formattedDate}</strong>
+                    <div class="detail-label">Appointment Date</div>
+                    <div class="detail-value">
+                        ${escapeHTML(formatDate(appointment.appointmentDate))}
+                    </div>
                 </div>
 
                 <div class="detail-item">
-                    <span>Appointment Time</span>
-                    <strong>${escapeHTML(a.appointmentTime)}</strong>
-                </div>
-
-                <div class="detail-item">
-                    <span>Appointment Status</span>
-                    <strong>${escapeHTML(a.status)}</strong>
-                </div>
-
-                <div class="detail-item">
-                    <span>Appointment ID</span>
-                    <strong>${escapeHTML(a.appointmentId)}</strong>
-                </div>
-
-                <div class="detail-item" style="grid-column: 1 / -1">
-                    <span>Reason for Visit</span>
-                    <strong>${escapeHTML(a.reason)}</strong>
+                    <div class="detail-label">Appointment Time</div>
+                    <div class="detail-value">
+                        ${escapeHTML(appointment.appointmentTime)}
+                    </div>
                 </div>
 
             </div>
 
-            <div class="details-actions">
+        </div>
 
-                <a class="button"
-                   href="add-appointment.html?id=${encodeURIComponent(a.appointmentId)}">
-                    Edit Appointment
-                </a>
+        <div class="details-section">
 
-                <button class="button delete-btn" id="deleteButton">
-                    Delete Appointment
-                </button>
+            <h3>Reason for Appointment</h3>
 
+            <div class="reason-box">
+                ${escapeHTML(appointment.reason || "No reason provided.")}
             </div>
-        `;
 
-        document.getElementById('deleteButton')
-            .addEventListener('click', () => {
-                deleteAppointment(a.appointmentId);
-            });
+        </div>
 
-    } catch (error) {
+        <div class="details-actions">
 
-        console.error(error);
+            <a
+                href="add-appointment.html?id=${encodeURIComponent(appointment.appointmentId)}"
+                class="edit-btn"
+            >
+                Edit Appointment
+            </a>
 
-        detailsContainer.textContent = error.message;
+            <button
+                type="button"
+                class="delete-btn"
+                id="deleteAppointment"
+            >
+                Delete Appointment
+            </button>
 
-    }
+        </div>
+    `;
+
+    // Attach delete functionality
+    document
+        .getElementById("deleteAppointment")
+        .addEventListener("click", () => {
+            deleteAppointment(appointment.appointmentId);
+        });
 }
 
-
-// DELETE APPOINTMENT
+// Delete appointment
 async function deleteAppointment(id) {
 
     const confirmed = confirm(
-        `Are you sure you want to delete ${id}?`
+        `Are you sure you want to delete appointment ${id}?`
     );
 
     if (!confirmed) return;
 
     try {
-
         const response = await fetch(
             `${API_URL}/${encodeURIComponent(id)}`,
-            { method: 'DELETE' }
+            {
+                method: "DELETE"
+            }
         );
 
-        const data = await response.json();
+        const result = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message);
+            throw new Error(result.message || "Failed to delete appointment.");
         }
 
-        alert('Appointment deleted successfully!');
+        alert("Appointment deleted successfully!");
 
-        window.location.href = 'appointments.html';
+        window.location.href = "appointments.html";
 
     } catch (error) {
-
-        alert(error.message);
-
+        console.error("Delete error:", error);
+        alert(error.message || "Something went wrong while deleting.");
     }
 }
 
-
+// Initialize page
 loadAppointmentDetails();
