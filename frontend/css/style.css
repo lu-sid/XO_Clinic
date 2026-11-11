@@ -1,32 +1,27 @@
-
-/* ============================================
-   CLINICCARE - COMPLETE PREMIUM DESIGN SYSTEM
-============================================ */
-
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --primary: #07858a;
-    --primary-dark: #06666c;
-    --primary-light: #e5f5f3;
+    --primary: #94617f;
+    --primary-dark: #75445f;
+    --primary-light: #f5eaf1;
 
-    --navy: #172d40;
-    --navy-light: #203d52;
+    --navy: #352638;
+    --navy-light: #50384f;
 
-    --background: #f4f7f9;
+    --background: #fbf7fa;
     --surface: #ffffff;
 
-    --text: #243746;
-    --muted: #8998a4;
-    --border: #e9eef1;
+    --text: #443744;
+    --muted: #9b8c9a;
+    --border: #eee4ec;
 
-    --green: #269b72;
-    --red: #d96868;
-    --orange: #d89a43;
-    --blue: #568acb;
+    --green: #57977c;
+    --red: #c66f83;
+    --orange: #bd7895;
+    --blue: #9a83b4;
 
-    --shadow: 0 4px 22px rgba(28, 52, 70, 0.045);
-    --radius: 15px;
+    --shadow: 0 8px 28px rgba(74, 43, 66, 0.055);
+    --radius: 18px;
 }
 
 * {
@@ -104,7 +99,7 @@ a {
     font-size: 23px;
     font-weight: 800;
 
-    box-shadow: 0 5px 15px rgba(7, 133, 138, 0.3);
+    box-shadow: 0 5px 15px rgba(148, 97, 127, 0.30);
 }
 
 .brand-name {
@@ -115,13 +110,13 @@ a {
 }
 
 .brand-name span {
-    color: #63d1c8;
+    color: #e6a8c2;
 }
 
 .brand-name small {
     display: block;
     font-family: 'DM Sans', sans-serif;
-    color: #8da3b2;
+    color: #c1aebd;
     font-size: 8px;
     letter-spacing: 1.6px;
     font-weight: 700;
@@ -129,7 +124,7 @@ a {
 }
 
 .sidebar-label {
-    color: #8299a9;
+    color: #b59fb0;
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 1.7px;
@@ -150,15 +145,15 @@ a {
     align-items: center;
     gap: 13px;
 
-    color: #b5c4ce;
+    color: #d7c8d4;
 
     padding: 12px 14px;
-    border-radius: 9px;
+    border-radius: 11px;
 
     font-size: 13px;
     font-weight: 600;
 
-    transition: 0.2s ease;
+    transition: all 0.22s ease;
 }
 
 .nav-link:hover {
@@ -169,7 +164,7 @@ a {
 .nav-link.active {
     color: white;
     background: var(--primary);
-    box-shadow: 0 5px 15px rgba(7,133,138,0.2);
+    box-shadow: 0 5px 15px rgba(148,97,127,0.22);
 }
 
 .nav-icon {
@@ -196,8 +191,8 @@ a {
 
     border-radius: 10px;
 
-    background: rgba(99,209,200,0.13);
-    color: #72d9d0;
+    background: rgba(230,168,194,0.15);
+    color: #e6a8c2;
 
     display: grid;
     place-items: center;
@@ -209,7 +204,7 @@ a {
 }
 
 .sidebar-bottom p {
-    color: #8da3b2;
+    color: #c1aebd;
     font-size: 10px;
 }
 
@@ -299,13 +294,13 @@ a {
     color: white;
 
     padding: 12px 17px;
-    border-radius: 9px;
+    border-radius: 11px;
 
     font-size: 12px;
     font-weight: 700;
 
-    box-shadow: 0 5px 13px rgba(7,133,138,0.16);
-    transition: 0.2s ease;
+    box-shadow: 0 5px 13px rgba(148,97,127,0.18);
+    transition: all 0.22s ease;
 }
 
 .primary-button:hover {
@@ -330,14 +325,14 @@ a {
 }
 
 .dashboard-stat {
-    background: white;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
 
     padding: 21px;
 
     box-shadow: var(--shadow);
-    transition: 0.25s ease;
+    transition: all 0.25s ease;
 }
 
 .dashboard-stat:hover {
@@ -362,34 +357,34 @@ a {
 }
 
 .total-icon {
-    color: #3987b6;
-    background: #eaf4fb;
+    color: #9a83b4;
+    background: #f1eafa;
 }
 
 .scheduled-icon {
-    color: #c48a34;
-    background: #fff5e5;
+    color: #bd7895;
+    background: #fff0f4;
 }
 
 .completed-icon {
-    color: #269b72;
-    background: #e8f6ef;
+    color: #57977c;
+    background: #eaf5ef;
 }
 
 .cancelled-icon {
-    color: #d96868;
-    background: #fff0ef;
+    color: #c66f83;
+    background: #fff0f3;
 }
 
 .stat-tag {
-    color: #a0adb6;
+    color: #aa9aaa;
     font-size: 9px;
     font-weight: 800;
     letter-spacing: 1px;
 }
 
 .dashboard-stat > p {
-    color: #7e8e9a;
+    color: #887887;
     font-size: 12px;
     font-weight: 600;
     margin-top: 17px;
@@ -405,7 +400,7 @@ a {
 }
 
 .stat-footer {
-    color: #9aa8b1;
+    color: #a99aa7;
     font-size: 10px;
     margin-top: 12px;
 }
@@ -421,7 +416,7 @@ a {
 ============================================ */
 
 .dashboard-card {
-    background: white;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
 
@@ -453,8 +448,8 @@ a {
 }
 
 .chart-label {
-    color: #84939e;
-    background: #f3f7f8;
+    color: #958494;
+    background: #faf4f8;
 
     padding: 7px 10px;
     border-radius: 6px;
@@ -511,7 +506,7 @@ a {
     align-items: center;
     gap: 9px;
 
-    color: #71818c;
+    color: #887887;
     font-size: 11px;
     font-weight: 600;
 }
@@ -529,15 +524,15 @@ a {
 }
 
 .scheduled-dot {
-    background: #568acb;
+    background: #9a83b4;
 }
 
 .completed-dot {
-    background: #269b72;
+    background: #57977c;
 }
 
 .cancelled-dot {
-    background: #dc7474;
+    background: #c66f83;
 }
 
 
@@ -563,7 +558,7 @@ a {
 .table-wrap {
     width: 100%;
     overflow-x: auto;
-    border-radius: 9px;
+    border-radius: 11px;
 }
 
 .dashboard-table {
@@ -573,9 +568,9 @@ a {
 }
 
 .dashboard-table th {
-    background: #f7f9fa;
+    background: #faf6f9;
 
-    color: #8b9aa4;
+    color: #958494;
     font-size: 9px;
     font-weight: 800;
     letter-spacing: 0.8px;
@@ -590,16 +585,16 @@ a {
 .dashboard-table td {
     padding: 14px 12px;
 
-    color: #637581;
+    color: #756575;
     font-size: 11px;
     font-weight: 600;
 
-    border-bottom: 1px solid #eff2f4;
+    border-bottom: 1px solid #f1e9ef;
     white-space: nowrap;
 }
 
 .dashboard-table tbody tr:hover {
-    background: #f7fbfb;
+    background: #fcf7fa;
 }
 
 .dashboard-table tbody tr:last-child td {
@@ -640,7 +635,7 @@ a {
 }
 
 .doctor-name {
-    color: #526877;
+    color: #705a6c;
 }
 
 .dashboard-status {
@@ -664,18 +659,18 @@ a {
 }
 
 .dashboard-status.Scheduled {
-    color: #477fbc;
-    background: #eaf3ff;
+    color: #82618f;
+    background: #f1eafa;
 }
 
 .dashboard-status.Completed {
-    color: #25855e;
+    color: #438466;
     background: #e8f6ee;
 }
 
 .dashboard-status.Cancelled {
-    color: #ca6565;
-    background: #fff0ef;
+    color: #bd657e;
+    background: #fff0f3;
 }
 
 .table-action {
@@ -701,7 +696,7 @@ a {
 
     padding: 18px 3px;
 
-    color: #9aa7b0;
+    color: #a99aa7;
     font-size: 10px;
 }
 
@@ -722,7 +717,7 @@ a {
     align-items: center;
     justify-content: space-between;
 
-    background: white;
+    background: var(--surface);
     border-bottom: 1px solid var(--border);
 }
 
@@ -811,13 +806,13 @@ a {
     color: white;
 
     border: 1px solid var(--primary);
-    border-radius: 9px;
+    border-radius: 11px;
 
     font-size: 13px;
     font-weight: 700;
 
     cursor: pointer;
-    transition: 0.2s ease;
+    transition: all 0.22s ease;
 }
 
 .button:hover {
@@ -833,7 +828,7 @@ a {
 }
 
 .button.secondary:hover {
-    background: #e4eeee;
+    background: #f0e3ec;
 }
 
 
@@ -842,7 +837,7 @@ a {
 ============================================ */
 
 .panel {
-    background: white;
+    background: var(--surface);
     padding: 25px;
 
     border: 1px solid var(--border);
@@ -892,16 +887,16 @@ a {
     width: 100%;
     padding: 12px 14px;
 
-    background: #fbfcfd;
+    background: #fdf9fc;
 
-    border: 1px solid #e1e9eb;
-    border-radius: 9px;
+    border: 1px solid #eadfe8;
+    border-radius: 11px;
 
     color: var(--text);
     font-size: 13px;
     outline: none;
 
-    transition: 0.2s ease;
+    transition: all 0.22s ease;
 }
 
 .filters input:focus,
@@ -910,8 +905,8 @@ a {
 .form-grid select:focus,
 .form-grid textarea:focus {
     border-color: var(--primary);
-    background: white;
-    box-shadow: 0 0 0 3px rgba(7,133,138,0.09);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(148,97,127,0.10);
 }
 
 .action-buttons {
@@ -932,18 +927,18 @@ a {
 }
 
 .view-btn {
-    background: #eaf4fb;
-    color: #3675a4;
+    background: #f1eafa;
+    color: #82618f;
 }
 
 .edit-btn {
-    background: #fff4df;
-    color: #ad7a24;
+    background: #fff0f4;
+    color: #a65f80;
 }
 
 .delete-btn {
-    background: #fff0ef;
-    color: #cf5656;
+    background: #fff0f3;
+    color: #bd657e;
 }
 
 .status {
@@ -962,13 +957,13 @@ a {
 }
 
 .status-Completed {
-    background: #e4f6ed;
-    color: #21875d;
+    background: #eaf5ef;
+    color: #438466;
 }
 
 .status-Cancelled {
-    background: #fff0ed;
-    color: #ce6560;
+    background: #fff0f3;
+    color: #bd657e;
 }
 
 
@@ -984,8 +979,8 @@ a {
 
 .table-wrap th {
     padding: 14px;
-    color: #81919c;
-    background: #f7f9fa;
+    color: #958494;
+    background: #faf6f9;
     font-size: 10px;
     font-weight: 800;
     text-align: left;
@@ -996,11 +991,11 @@ a {
     padding: 15px 14px;
     color: #5f7280;
     font-size: 12px;
-    border-bottom: 1px solid #eff2f4;
+    border-bottom: 1px solid #f1e9ef;
 }
 
 .table-wrap tbody tr:hover {
-    background: #f7fbfb;
+    background: #fcf7fa;
 }
 
 
@@ -1079,8 +1074,8 @@ a {
 
 .detail-item {
     padding: 18px;
-    background: #f7f9fa;
-    border: 1px solid #edf1f2;
+    background: #faf6f9;
+    border: 1px solid #f0e7ef;
     border-radius: 11px;
 }
 
@@ -1291,4 +1286,86 @@ a {
         transition-duration: 0.01ms !important;
     }
 
+}
+
+
+/* ============================================
+   XO CLINIC THEME FINISHING DETAILS
+============================================ */
+
+::selection {
+    color: #352638;
+    background: #f0dce8;
+}
+
+:focus-visible {
+    outline: 3px solid rgba(148, 97, 127, 0.28);
+    outline-offset: 3px;
+}
+
+.sidebar {
+    background:
+        radial-gradient(circle at 15% 5%, rgba(230, 168, 194, 0.12), transparent 30%),
+        linear-gradient(165deg, #352638 0%, #402d42 55%, #2d2234 100%);
+}
+
+.brand-icon {
+    background: linear-gradient(145deg, #c58aa7, #94617f);
+    box-shadow: 0 7px 20px rgba(148, 97, 127, 0.30);
+}
+
+.nav-link.active {
+    background: linear-gradient(105deg, #94617f, #a87591);
+    box-shadow: 0 7px 18px rgba(148, 97, 127, 0.24);
+}
+
+.primary-button,
+.button:not(.secondary) {
+    background: linear-gradient(110deg, #94617f, #a87591);
+    border-color: #94617f;
+    box-shadow: 0 7px 18px rgba(148, 97, 127, 0.17);
+}
+
+.primary-button:hover,
+.button:not(.secondary):hover {
+    background: linear-gradient(110deg, #75445f, #94617f);
+    border-color: #75445f;
+}
+
+.dashboard-stat,
+.dashboard-card,
+.panel {
+    box-shadow: 0 8px 28px rgba(74, 43, 66, 0.045);
+}
+
+.dashboard-stat:hover,
+.dashboard-card:hover,
+.panel:hover {
+    border-color: #e6d4e1;
+}
+
+.dashboard-table th,
+.table-wrap th {
+    background: #faf5f9;
+}
+
+.dashboard-table tbody tr:hover,
+.table-wrap tbody tr:hover {
+    background: #fcf7fa;
+}
+
+.detail-item {
+    background: #faf5f9;
+    border-color: #f0e5ee;
+}
+
+.system-status {
+    color: #477c65;
+    background: #edf6f0;
+}
+
+@media (max-width: 760px) {
+    .sidebar {
+        background: linear-gradient(165deg, #352638 0%, #402d42 100%);
+    }
 }

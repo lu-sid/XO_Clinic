@@ -1,57 +1,82 @@
 
-const API_URL = 'http://localhost:5000/api/appointments';
+const API_URL = "http://localhost:5000/api/appointments";
 
 let activityChart = null;
 let statusChart = null;
 let doctorChart = null;
 
+const XO_COLORS = {
+    plum: "#94617f",
+    rose: "#d58ba8",
+    lavender: "#c5afd9",
+    blue: "#819bb8",
+    green: "#7da58e",
+    red: "#c77d89",
+    grid: "#eee9ef",
+    text: "#938a98",
+    dark: "#2b2331"
+};
 
-// ============================================
 // DATE HEADER
-// ============================================
-
 function updateDate() {
+    const dateElement = document.getElementById("currentDate");
+    if (!dateElement) return;
 
-    const today = new Date();
-
-    document.getElementById('currentDate').textContent =
-        today.toLocaleDateString('en-IN', {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
+    dateElement.textContent = new Date().toLocaleDateString("en-IN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
 }
 
-
-// ============================================
 // HTML SAFETY
-// ============================================
-
 function escapeHTML(value) {
-
-    return String(value ?? '').replace(/[&<>"']/g, char => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
     })[char]);
-
 }
 
+function formatDate(value) {
+    if (!value) return "—";
 
-// ============================================
-// LOAD DASHBOARD DATA
-// ============================================
+    const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(String(value));
+    const date = dateOnly
+        ? new Date(`${value}T00:00:00`)
+        : new Date(value);
 
+    if (Number.isNaN(date.getTime())) return escapeHTML(value);
+
+    return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function getAppointmentDate(appointment) {
+    return appointment.appointmentDate || appointment.createdAt || "";
+}
+
+function getInitials(name) {
+    return String(name || "Patient")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(part => part.charAt(0).toUpperCase())
+        .join("");
+}
+
+// LOAD DASHBOARD
 async function loadDashboard() {
-
-    const recentContainer =
-        document.getElementById('recentAppointments');
+    const recentContainer = document.getElementById("recentAppointments");
 
     try {
-
         const response = await fetch(API_URL);
 
         if (!response.ok) {
@@ -60,7 +85,13 @@ async function loadDashboard() {
 
         const data = await response.json();
 
-        const appointments = data.appointments || [];
+        const appointments = Array.isArray(data)
+            ? data
+            : (data.appointments || data.data || []);
+
+        if (!Array.isArray(appointments)) {
+            throw new Error("Invalid appointment list.");
+        }
 
         updateStatistics(appointments);
         updateRecentAppointments(appointments);
@@ -69,590 +100,361 @@ async function loadDashboard() {
         createDoctorChart(appointments);
 
     } catch (error) {
+        console.error("Dashboard loading error:", error);
 
-        console.error('Dashboard loading error:', error);
+        if (recentContainer) {
+            recentContainer.innerHTML = `
+                <tr>
+                    <td colspan="6" class="loading-cell">
+                        Unable to load dashboard data.
+                        Please check that your backend server is running.
+                    </td>
+                </tr>
+            `;
+        }
 
-        recentContainer.innerHTML = `
-            <tr>
-                <td colspan="6" class="loading-cell">
-                    Unable to load dashboard data.
-                    Please check your backend server.
-                </td>
-            </tr>
-        `;
-
-        ['totalCount', 'scheduledCount',
-         'completedCount', 'cancelledCount'].forEach(id => {
-            document.getElementById(id).textContent = '—';
+        [
+            "totalCount", "scheduledCount",
+            "completedCount", "cancelledCount"
+        ].forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = "—";
         });
 
+        [
+            "legendScheduled", "legendCompleted", "legendCancelled"
+        ].forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = "—";
+        });
+
+        const chartTotal = document.getElementById("chartTotal");
+        if (chartTotal) chartTotal.textContent = "—";
     }
-
 }
 
-
-// ============================================
 // STATISTICS
-// ============================================
-
 function updateStatistics(appointments) {
+    const counts = {
+        Scheduled: appointments.filter(a => a.status === "Scheduled").length,
+        Completed: appointments.filter(a => a.status === "Completed").length,
+        Cancelled: appointments.filter(a => a.status === "Cancelled").length
+    };
 
-    const total = appointments.length;
+    const values = {
+        totalCount: appointments.length,
+        scheduledCount: counts.Scheduled,
+        completedCount: counts.Completed,
+        cancelledCount: counts.Cancelled,
+        legendScheduled: counts.Scheduled,
+        legendCompleted: counts.Completed,
+        legendCancelled: counts.Cancelled,
+        chartTotal: appointments.length
+    };
 
-    const scheduled = appointments.filter(
-        a => a.status === 'Scheduled'
-    ).length;
-
-    const completed = appointments.filter(
-        a => a.status === 'Completed'
-    ).length;
-
-    const cancelled = appointments.filter(
-        a => a.status === 'Cancelled'
-    ).length;
-
-
-    document.getElementById('totalCount').textContent = total;
-
-    document.getElementById('scheduledCount').textContent = scheduled;
-
-    document.getElementById('completedCount').textContent = completed;
-
-    document.getElementById('cancelledCount').textContent = cancelled;
-
-
-    // Status chart legend
-
-    document.getElementById('legendScheduled').textContent = scheduled;
-
-    document.getElementById('legendCompleted').textContent = completed;
-
-    document.getElementById('legendCancelled').textContent = cancelled;
-
+    Object.entries(values).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+    });
 }
 
-
-// ============================================
-// RECENT APPOINTMENTS TABLE
-// ============================================
-
+// RECENT APPOINTMENTS
 function updateRecentAppointments(appointments) {
+    const container = document.getElementById("recentAppointments");
+    if (!container) return;
 
-    const container =
-        document.getElementById('recentAppointments');
-
-
-    if (appointments.length === 0) {
-
+    if (!appointments.length) {
         container.innerHTML = `
             <tr>
                 <td colspan="6" class="loading-cell">
-                    No appointments found.
+                    No appointments found yet.
                 </td>
             </tr>
         `;
-
         return;
     }
 
-
-    // Sort by creation time, newest first
-
     const recent = [...appointments]
         .sort((a, b) => {
-            return new Date(b.createdAt || b.appointmentDate)
-                - new Date(a.createdAt || a.appointmentDate);
+            const dateA = new Date(a.createdAt || getAppointmentDate(a)).getTime() || 0;
+            const dateB = new Date(b.createdAt || getAppointmentDate(b)).getTime() || 0;
+            return dateB - dateA;
         })
         .slice(0, 6);
 
-
-    container.innerHTML = recent.map(a => {
-
-        const initials = escapeHTML(
-            a.patientName
-                .split(' ')
-                .filter(Boolean)
-                .map(word => word[0])
-                .slice(0, 2)
-                .join('')
-                .toUpperCase()
-        );
-
-        const date = new Date(a.appointmentDate)
-            .toLocaleDateString('en-IN', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-            });
-
+    container.innerHTML = recent.map(appointment => {
+        const initials = escapeHTML(getInitials(appointment.patientName));
+        const status = String(appointment.status || "Scheduled");
+        const statusClass = status.toLowerCase().replace(/[^a-z0-9_-]/g, "");
 
         return `
-
             <tr>
-
                 <td>
                     <span class="appointment-code">
-                        ${escapeHTML(a.appointmentId)}
+                        ${escapeHTML(appointment.appointmentId)}
                     </span>
                 </td>
-
                 <td>
                     <div class="patient-cell">
-
-                        <div class="patient-avatar">
-                            ${initials}
-                        </div>
-
+                        <div class="patient-avatar">${initials}</div>
                         <span class="patient-name">
-                            ${escapeHTML(a.patientName)}
+                            ${escapeHTML(appointment.patientName)}
                         </span>
-
                     </div>
                 </td>
-
                 <td>
                     <span class="doctor-name">
-                        ${escapeHTML(a.doctorName)}
+                        ${escapeHTML(appointment.doctorName)}
                     </span>
                 </td>
-
-                <td>${date}</td>
-
+                <td>${formatDate(getAppointmentDate(appointment))}</td>
                 <td>
-                    <span class="dashboard-status ${escapeHTML(a.status)}">
-                        ${escapeHTML(a.status)}
+                    <span class="dashboard-status ${statusClass}">
+                        ${escapeHTML(status)}
                     </span>
                 </td>
-
                 <td>
                     <a class="table-action"
-                       href="details.html?id=${encodeURIComponent(a.appointmentId)}">
-                        View →
+                       href="details.html?id=${encodeURIComponent(appointment.appointmentId)}">
+                        View <span>→</span>
                     </a>
                 </td>
-
             </tr>
-
         `;
-
-    }).join('');
-
+    }).join("");
 }
 
+// CHART DEFAULTS
+if (typeof Chart !== "undefined") {
+    Chart.defaults.font.family = "'DM Sans', sans-serif";
+    Chart.defaults.color = XO_COLORS.text;
+    Chart.defaults.plugins.legend.display = false;
+}
 
-// ============================================
-// CHART DEFAULT SETTINGS
-// ============================================
-
-Chart.defaults.font.family = "'DM Sans', sans-serif";
-
-Chart.defaults.color = '#8998a4';
-
-Chart.defaults.plugins.legend.display = false;
-
-
-// ============================================
-// 1. APPOINTMENT ACTIVITY CHART
-// ============================================
-
+// ACTIVITY CHART
 function createActivityChart(appointments) {
+    const canvas = document.getElementById("activityChart");
+    if (!canvas || typeof Chart === "undefined") return;
 
     const grouped = {};
 
-    appointments.forEach(a => {
+    appointments.forEach(appointment => {
+        const rawDate = getAppointmentDate(appointment);
+        if (!rawDate) return;
 
-        const date = new Date(a.appointmentDate);
+        const date = /^\d{4}-\d{2}-\d{2}$/.test(String(rawDate))
+            ? new Date(`${rawDate}T00:00:00`)
+            : new Date(rawDate);
 
-        const key = date.toLocaleDateString('en-IN', {
-            day: '2-digit',
-            month: 'short'
-        });
+        if (Number.isNaN(date.getTime())) return;
 
+        const key = date.toISOString().slice(0, 10);
         grouped[key] = (grouped[key] || 0) + 1;
-
     });
 
+    const sortedDates = Object.keys(grouped).sort();
 
-    const labels = Object.keys(grouped);
+    const labels = sortedDates.map(key => {
+        return new Date(`${key}T00:00:00`).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short"
+        });
+    });
 
-    const values = Object.values(grouped);
+    const values = sortedDates.map(key => grouped[key]);
 
+    if (activityChart) activityChart.destroy();
 
-    const ctx = document.getElementById('activityChart');
-
-
-    if (activityChart) {
-        activityChart.destroy();
-    }
-
+    const ctx = canvas.getContext("2d");
+    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+    gradient.addColorStop(0, "rgba(177, 119, 151, 0.25)");
+    gradient.addColorStop(1, "rgba(177, 119, 151, 0.015)");
 
     activityChart = new Chart(ctx, {
-
-        type: 'line',
-
+        type: "line",
         data: {
-
-            labels: labels,
-
+            labels,
             datasets: [{
-
-                label: 'Appointments',
-
+                label: "Appointments",
                 data: values,
-
-                borderColor: '#07858a',
-
-                backgroundColor: 'rgba(7,133,138,0.10)',
-
+                borderColor: XO_COLORS.plum,
+                backgroundColor: gradient,
                 fill: true,
-
                 tension: 0.4,
-
-                borderWidth: 3,
-
-                pointBackgroundColor: '#07858a',
-
-                pointBorderColor: '#ffffff',
-
-                pointBorderWidth: 3,
-
-                pointRadius: 5,
-
+                borderWidth: 2.7,
+                pointBackgroundColor: "#ffffff",
+                pointBorderColor: XO_COLORS.plum,
+                pointBorderWidth: 2.5,
+                pointRadius: 4,
                 pointHoverRadius: 7
-
             }]
-
         },
-
         options: {
-
             responsive: true,
-
             maintainAspectRatio: false,
-
-            interaction: {
-                intersect: false,
-                mode: 'index'
-            },
-
+            interaction: { intersect: false, mode: "index" },
             plugins: {
-
-                legend: {
-                    display: false
-                },
-
+                legend: { display: false },
                 tooltip: {
-
-                    backgroundColor: '#172d40',
-
+                    backgroundColor: XO_COLORS.dark,
+                    titleColor: "#ffffff",
+                    bodyColor: "#f3eaf0",
                     padding: 12,
-
-                    titleFont: {
-                        size: 12,
-                        weight: 'bold'
-                    },
-
-                    bodyFont: {
-                        size: 12
-                    },
-
+                    cornerRadius: 8,
                     displayColors: false
-
                 }
-
             },
-
             scales: {
-
                 x: {
-
-                    grid: {
-                        display: false
-                    },
-
-                    border: {
-                        display: false
-                    },
-
-                    ticks: {
-                        font: {
-                            size: 10
-                        }
-                    }
-
+                    grid: { display: false },
+                    border: { display: false },
+                    ticks: { color: XO_COLORS.text, font: { size: 10 } }
                 },
-
                 y: {
-
                     beginAtZero: true,
-
                     ticks: {
                         precision: 0,
                         stepSize: 1,
-                        font: {
-                            size: 10
-                        }
+                        color: XO_COLORS.text,
+                        font: { size: 10 },
+                        padding: 9
                     },
-
-                    grid: {
-                        color: '#edf1f3',
-                        drawTicks: false
-                    },
-
-                    border: {
-                        display: false,
-                        dash: [4, 4]
-                    }
-
+                    grid: { color: XO_COLORS.grid, drawTicks: false },
+                    border: { display: false }
                 }
-
             }
-
         }
-
     });
-
 }
 
-
-// ============================================
-// 2. APPOINTMENT STATUS DOUGHNUT CHART
-// ============================================
-
+// STATUS DOUGHNUT CHART
 function createStatusChart(appointments) {
+    const canvas = document.getElementById("statusChart");
+    if (!canvas || typeof Chart === "undefined") return;
 
-    const scheduled = appointments.filter(
-        a => a.status === 'Scheduled'
-    ).length;
+    const scheduled = appointments.filter(a => a.status === "Scheduled").length;
+    const completed = appointments.filter(a => a.status === "Completed").length;
+    const cancelled = appointments.filter(a => a.status === "Cancelled").length;
 
-    const completed = appointments.filter(
-        a => a.status === 'Completed'
-    ).length;
+    if (statusChart) statusChart.destroy();
 
-    const cancelled = appointments.filter(
-        a => a.status === 'Cancelled'
-    ).length;
-
-
-    const ctx = document.getElementById('statusChart');
-
-
-    if (statusChart) {
-        statusChart.destroy();
-    }
-
-
-    statusChart = new Chart(ctx, {
-
-        type: 'doughnut',
-
+    statusChart = new Chart(canvas, {
+        type: "doughnut",
         data: {
-
-            labels: [
-                'Scheduled',
-                'Completed',
-                'Cancelled'
-            ],
-
+            labels: ["Scheduled", "Completed", "Cancelled"],
             datasets: [{
-
                 data: [scheduled, completed, cancelled],
-
                 backgroundColor: [
-                    '#568acb',
-                    '#269b72',
-                    '#dc7474'
+                    XO_COLORS.blue,
+                    XO_COLORS.green,
+                    XO_COLORS.red
                 ],
-
                 borderWidth: 0,
-
                 hoverOffset: 7,
-
                 spacing: 4,
-
                 borderRadius: 5
-
             }]
-
         },
-
         options: {
-
             responsive: true,
-
             maintainAspectRatio: false,
-
-            cutout: '73%',
-
+            cutout: "76%",
             plugins: {
-
-                legend: {
-                    display: false
-                },
-
+                legend: { display: false },
                 tooltip: {
-
-                    backgroundColor: '#172d40',
-
+                    backgroundColor: XO_COLORS.dark,
+                    titleColor: "#ffffff",
+                    bodyColor: "#f3eaf0",
                     padding: 12,
-
+                    cornerRadius: 8,
                     callbacks: {
-
-                        label: function(context) {
-
-                            return ` ${context.label}: ${context.raw}`;
-
-                        }
-
+                        label: context => ` ${context.label}: ${context.raw}`
                     }
-
                 }
-
             }
-
         }
-
     });
-
 }
 
-
-// ============================================
-// 3. DOCTOR-WISE APPOINTMENT BAR CHART
-// ============================================
-
+// DOCTOR-WISE BAR CHART
 function createDoctorChart(appointments) {
+    const canvas = document.getElementById("doctorChart");
+    if (!canvas || typeof Chart === "undefined") return;
 
     const doctorCounts = {};
 
-
-    appointments.forEach(a => {
-
-        doctorCounts[a.doctorName] =
-            (doctorCounts[a.doctorName] || 0) + 1;
-
+    appointments.forEach(appointment => {
+        const doctor = appointment.doctorName || "Unassigned";
+        doctorCounts[doctor] = (doctorCounts[doctor] || 0) + 1;
     });
 
+    const doctors = Object.entries(doctorCounts).sort((a, b) => b[1] - a[1]);
+    const labels = doctors.map(item => item[0]);
+    const values = doctors.map(item => item[1]);
 
-    const labels = Object.keys(doctorCounts);
+    if (doctorChart) doctorChart.destroy();
 
-    const values = Object.values(doctorCounts);
+    const chartColors = [
+        "#94617f", "#bd88a2", "#d4a9bc",
+        "#8e9fba", "#a7b9ad", "#c58b91"
+    ];
 
-
-    const ctx = document.getElementById('doctorChart');
-
-
-    if (doctorChart) {
-        doctorChart.destroy();
-    }
-
-
-    doctorChart = new Chart(ctx, {
-
-        type: 'bar',
-
+    doctorChart = new Chart(canvas, {
+        type: "bar",
         data: {
-
-            labels: labels,
-
+            labels,
             datasets: [{
-
-                label: 'Appointments',
-
+                label: "Appointments",
                 data: values,
-
-                backgroundColor: [
-                    '#07858a',
-                    '#5ba9a5',
-                    '#a4d5cd',
-                    '#568acb',
-                    '#d89a43'
-                ],
-
-                borderRadius: 8,
-
-                maxBarThickness: 65,
-
+                backgroundColor: labels.map((_, index) =>
+                    chartColors[index % chartColors.length]
+                ),
+                borderRadius: 7,
+                maxBarThickness: 58,
                 borderSkipped: false
-
             }]
-
         },
-
         options: {
-
             responsive: true,
-
             maintainAspectRatio: false,
-
             plugins: {
-
-                legend: {
-                    display: false
-                },
-
+                legend: { display: false },
                 tooltip: {
-
-                    backgroundColor: '#172d40',
-
-                    padding: 12
-
+                    backgroundColor: XO_COLORS.dark,
+                    titleColor: "#ffffff",
+                    bodyColor: "#f3eaf0",
+                    padding: 12,
+                    cornerRadius: 8
                 }
-
             },
-
             scales: {
-
                 x: {
-
-                    grid: {
-                        display: false
-                    },
-
-                    border: {
-                        display: false
-                    },
-
+                    grid: { display: false },
+                    border: { display: false },
                     ticks: {
-                        font: {
-                            size: 11,
-                            weight: '600'
-                        }
+                        color: XO_COLORS.text,
+                        font: { size: 10, weight: "600" }
                     }
-
                 },
-
                 y: {
-
                     beginAtZero: true,
-
                     ticks: {
                         precision: 0,
-                        stepSize: 1
+                        stepSize: 1,
+                        color: XO_COLORS.text,
+                        font: { size: 9 }
                     },
-
-                    grid: {
-                        color: '#edf1f3',
-                        drawTicks: false
-                    },
-
-                    border: {
-                        display: false,
-                        dash: [4, 4]
-                    }
-
+                    grid: { color: XO_COLORS.grid, drawTicks: false },
+                    border: { display: false }
                 }
-
             }
-
         }
-
     });
-
 }
 
-updateDate();
-
-loadDashboard();
-
-setInterval(loadDashboard, 30000);
+// INITIALIZE DASHBOARD
+document.addEventListener("DOMContentLoaded", () => {
+    updateDate();
+    loadDashboard();
+    setInterval(loadDashboard, 30000);
+});
