@@ -16,8 +16,24 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        .history-page {
-            padding-bottom: 25px;
+        .history-page-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 28px;
+        }
+
+        .history-page-header h2 {
+            font-size: 28px;
+            color: #101828;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .history-page-header p {
+            color: #71839d;
+            font-size: 13px;
         }
 
         .history-page-header {
@@ -490,90 +506,21 @@
     </style>
 </head>
 
-<body>
+<body data-page="history">
 
 <div class="dashboard-layout">
 
     <!-- SIDEBAR -->
 
-    <aside class="sidebar">
-
-        <a class="brand" href="dashboard.html">
-            <div class="brand-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2.5"
-                    stroke-linecap="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-            </div>
-
-            <div class="brand-name">
-                XO <span>Clinic</span>
-                <small>CARE • ORGANIZED</small>
-            </div>
-        </a>
-
-        <p class="sidebar-label">WORKSPACE</p>
-
-        <nav class="sidebar-nav">
-
-            <a href="dashboard.html" class="nav-link">
-                <span class="nav-icon">▦</span>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="appointments.html" class="nav-link">
-                <span class="nav-icon">▣</span>
-                <span>Appointments</span>
-            </a>
-
-            <a href="add-appointment.html" class="nav-link">
-                <span class="nav-icon">⊕</span>
-                <span>New appointment</span>
-            </a>
-
-            <a href="appointment-history.html" class="nav-link active"
-                aria-current="page">
-                <span class="nav-icon">◷</span>
-                <span>Appointment history</span>
-            </a>
-
-        </nav>
-
-        <p class="sidebar-label">QUICK ACCESS</p>
-
-        <nav class="sidebar-nav">
-
-            <a href="appointments.html" class="nav-link">
-                <span class="nav-icon">⌕</span>
-                <span>Find patients</span>
-            </a>
-
-        </nav>
-
-        <div class="sidebar-bottom">
-            <div class="sidebar-help-icon">✦</div>
-
-            <div>
-                <strong>XO Clinic</strong>
-                <p>A little more care, every day.</p>
-            </div>
-        </div>
-
-    </aside>
+    <div id="sidebarMount"></div>
 
     <!-- MAIN CONTENT -->
 
     <main class="main-content history-page">
 
         <header class="history-page-header">
-
-
-            <a href="dashboard.html" class="back-button">
-                ← Back to dashboard
-            </a>
-
+            <h2>Appointment History</h2>
+            <p>View, search and manage all previous and upcoming appointments.</p>
         </header>
 
         <!-- STATISTICS -->
@@ -775,6 +722,7 @@
 
 </div>
 
+<script src="js/sidebar.js"></script>
 <script src="js/history.js"></script>
 
 </body>

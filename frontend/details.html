@@ -1,269 +1,40 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101926">
     <title>Appointment Details | XO Clinic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-
-    <style>
-        .page-heading {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 28px;
-        }
-
-        .page-heading h1 {
-            font-size: 28px;
-            color: #172b4d;
-            margin: 0 0 7px;
-        }
-
-        .page-heading p {
-            color: #7b8798;
-            margin: 0;
-        }
-
-        .back-btn {
-            text-decoration: none;
-            color: #087f8c;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .details-card {
-            max-width: 950px;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 18px rgba(20, 40, 70, 0.05);
-        }
-
-        .details-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            padding-bottom: 24px;
-            border-bottom: 1px solid #edf0f4;
-        }
-
-        .details-header h2 {
-            color: #23344d;
-            font-size: 20px;
-            margin: 0 0 7px;
-        }
-
-        .details-header p {
-            color: #8a96a7;
-            margin: 0;
-            font-size: 13px;
-        }
-
-        .status-badge {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .status-Scheduled {
-            background: #e5f3ff;
-            color: #2875b8;
-        }
-
-        .status-Completed {
-            background: #e3f7ed;
-            color: #20865a;
-        }
-
-        .status-Cancelled {
-            background: #ffe9e9;
-            color: #cc4c55;
-        }
-
-        .details-section {
-            margin-top: 27px;
-        }
-
-        .details-section h3 {
-            font-size: 16px;
-            color: #23344d;
-            margin: 0 0 20px;
-        }
-
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 24px;
-        }
-
-        .detail-item {
-            padding: 16px;
-            background: #f8fafc;
-            border-radius: 10px;
-            border: 1px solid #eef1f5;
-        }
-
-        .detail-label {
-            color: #8a96a7;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 9px;
-            text-transform: uppercase;
-            letter-spacing: .4px;
-        }
-
-        .detail-value {
-            color: #263950;
-            font-size: 15px;
-            font-weight: 600;
-            overflow-wrap: anywhere;
-        }
-
-        .reason-box {
-            background: #f8fafc;
-            border: 1px solid #eef1f5;
-            border-radius: 10px;
-            padding: 18px;
-            color: #526176;
-            font-size: 14px;
-            line-height: 1.7;
-            min-height: 55px;
-            white-space: pre-wrap;
-        }
-
-        .details-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 30px;
-            padding-top: 24px;
-            border-top: 1px solid #edf0f4;
-        }
-
-        .edit-btn, .delete-btn {
-            padding: 12px 22px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            border: none;
-        }
-
-        .edit-btn {
-            background: #087f8c;
-            color: white;
-        }
-
-        .edit-btn:hover {
-            background: #066773;
-        }
-
-        .delete-btn {
-            background: #fff0f0;
-            color: #d64b55;
-        }
-
-        .delete-btn:hover {
-            background: #ffe0e0;
-        }
-
-        .loading-message, .error-message {
-            padding: 35px;
-            text-align: center;
-            color: #7b8798;
-        }
-
-        .error-message {
-            color: #d64b55;
-        }
-
-        @media (max-width: 650px) {
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .details-card {
-                padding: 20px;
-            }
-        }
-    </style>
 </head>
-
-<body>
-
+<body data-page="appointments">
 <div class="dashboard-layout">
-
-    <aside class="sidebar">
-
-        <div class="brand">
-            <span>✚</span>
-            <h2>XO Clinic</h2>
-        </div>
-
-        <p class="sidebar-label">MAIN MENU</p>
-
-        <nav class="sidebar-nav">
-
-            <a href="dashboard.html" class="nav-link">
-                <span class="nav-icon">▦</span>
-                Dashboard
-            </a>
-
-            <a href="appointments.html" class="nav-link active">
-                <span class="nav-icon">▤</span>
-                Appointments
-            </a>
-
-            <a href="add-appointment.html" class="nav-link">
-                <span class="nav-icon">＋</span>
-                Add Appointment
-            </a>
-
-        </nav>
-
-        <div class="sidebar-bottom">
-            <p>Clinic Appointment</p>
-            <small>Management System</small>
-        </div>
-
-    </aside>
+    <div id="sidebarMount"></div>
 
     <main class="main-content">
-
-        <div class="page-heading">
-
+        <header class="page-heading">
             <div>
+                <p class="header-date">PATIENT RECORDS</p>
                 <h1>Appointment Details</h1>
-                <p>View complete information about this appointment.</p>
+                <p>View and manage complete patient appointment information.</p>
             </div>
-
-            <a href="appointments.html" class="back-btn">
-                ← Back to Appointments
-            </a>
-
-        </div>
+            <a href="appointments.html" class="secondary-btn">← Back to Appointments</a>
+        </header>
 
         <section class="details-card" id="appointmentDetails">
-
-            <div class="loading-message">
-                Loading appointment details...
-            </div>
-
+            <div class="loading-message">Loading appointment details...</div>
         </section>
 
+        <footer class="page-footer">
+            <span>© 2026 XO Clinic</span>
+            <span>Thoughtful care. Organized simply.</span>
+        </footer>
     </main>
-
 </div>
-
+<script src="js/sidebar.js"></script>
 <script src="js/details.js"></script>
-
 </body>
 </html>

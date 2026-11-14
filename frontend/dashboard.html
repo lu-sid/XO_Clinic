@@ -241,108 +241,6 @@
             color: #059669;
         }
 
-        /* History */
-
-        .history-tools {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 18px;
-        }
-
-        .history-search {
-            flex: 1;
-            min-width: 180px;
-            border: 1px solid #e2e8f0;
-            border-radius: 9px;
-            padding: 11px 13px;
-            font-family: inherit;
-            font-size: 12px;
-            outline: none;
-            color: #172033;
-        }
-
-        .history-search:focus {
-            border-color: #0d9488;
-            box-shadow: 0 0 0 3px rgba(13,148,136,.08);
-        }
-
-        .history-filter {
-            border: 1px solid #e2e8f0;
-            border-radius: 9px;
-            padding: 10px 12px;
-            background: white;
-            font-family: inherit;
-            font-size: 12px;
-            color: #405674;
-            outline: none;
-        }
-
-        .history-summary {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 18px;
-        }
-
-        .history-summary span {
-            font-size: 11px;
-            background: #f1f5f9;
-            color: #52647d;
-            border-radius: 7px;
-            padding: 7px 10px;
-        }
-
-        .history-summary strong {
-            color: #0d9488;
-        }
-
-        .history-table-wrap {
-            overflow-x: auto;
-        }
-
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 650px;
-        }
-
-        .history-table th {
-            background: #f8fafc;
-            color: #52647d;
-            font-size: 10px;
-            letter-spacing: .5px;
-            text-align: left;
-            padding: 15px;
-            white-space: nowrap;
-        }
-
-        .history-table td {
-            padding: 15px;
-            font-size: 12px;
-            color: #334155;
-            border-bottom: 1px solid #edf1f5;
-        }
-
-        .history-table tbody tr:hover {
-            background: #f8fafc;
-        }
-
-        .history-empty {
-            text-align: center;
-            padding: 30px !important;
-            color: #8291a5 !important;
-        }
-
-        .history-count {
-            font-size: 11px;
-            color: #8190a5;
-        }
-
-        .nav-link[href="#history"] {
-            cursor: pointer;
-        }
-
         @media (max-width: 1050px) {
             .extra-stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -365,80 +263,13 @@
     </style>
 </head>
 
-<body>
+<body data-page="dashboard">
 
 <div class="dashboard-layout">
 
     <!-- SIDEBAR -->
 
-    <aside class="sidebar">
-
-        <a class="brand" href="dashboard.html" aria-label="XO Clinic dashboard">
-            <div class="brand-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-            </div>
-
-            <div class="brand-name">
-                XO <span>Clinic</span>
-                <small>CARE • ORGANIZED</small>
-            </div>
-        </a>
-
-        <p class="sidebar-label">WORKSPACE</p>
-
-        <nav class="sidebar-nav">
-            <a href="dashboard.html" class="nav-link active">
-                <span class="nav-icon">▦</span>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="appointments.html" class="nav-link">
-                <span class="nav-icon">▣</span>
-                <span>Appointments</span>
-            </a>
-
-            <a href="add-appointment.html" class="nav-link">
-                <span class="nav-icon">⊕</span>
-                <span>New appointment</span>
-            </a>
-
-            <a href="appointment-history.html" class="nav-link">
-                <span class="nav-icon">◷</span>
-                <span>Appointment history</span>
-            </a>
-        </nav>
-
-        <p class="sidebar-label">QUICK ACCESS</p>
-
-        <nav class="sidebar-nav">
-            <a href="#patientStatistics" class="nav-link">
-                <span class="nav-icon">♙</span>
-                <span>Patient statistics</span>
-            </a>
-
-            <a href="#doctorAvailability" class="nav-link">
-                <span class="nav-icon">⚕</span>
-                <span>Doctor overview</span>
-            </a>
-
-            <a href="#todaySchedule" class="nav-link">
-                <span class="nav-icon">◷</span>
-                <span>Today's schedule</span>
-            </a>
-        </nav>
-
-        <div class="sidebar-bottom">
-            <div class="sidebar-help-icon">✦</div>
-            <div>
-                <strong>XO Clinic</strong>
-                <p>A little more care, every day.</p>
-            </div>
-        </div>
-
-    </aside>
+    <div id="sidebarMount"></div>
 
     <!-- MAIN CONTENT -->
 
@@ -722,6 +553,7 @@
 
 </div>
 
+<script src="js/sidebar.js"></script>
 <script src="js/dashboard.js"></script>
 
 </body>
