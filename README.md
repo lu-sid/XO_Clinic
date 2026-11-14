@@ -54,7 +54,7 @@ ClinicAppointmentManagement/
 │   └── package.json
 │
 └── frontend/
-    ├── index.html
+    ├── dashboard.html
     ├── appointments.html
     ├── add-appointment.html
     ├── details.html
@@ -142,7 +142,7 @@ http://localhost:5000/api/appointments
 ### 5. Run the Frontend
 
 1. Open the `frontend` folder in Visual Studio Code.
-2. Open `index.html`.
+2. Open `dashboard.html`.
 3. Right-click and select **Open with Live Server**.
 
 The application will open in your browser.
