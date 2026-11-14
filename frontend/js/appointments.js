@@ -3,21 +3,21 @@ const API_URL = "http://localhost:5000/api/appointments";
 
 let allAppointments = [];
 let filteredAppointments = [];
-
 let currentPage = 1;
 const PAGE_SIZE = 8;
-
 let activeView = "All";
 
-// ------------------------------
+let calendarMode = "month";
+let calendarDate = new Date();
+
+// ==========================================
 // DATE HELPERS
-// ------------------------------
+// ==========================================
 
 function getDateKey(value) {
     if (!value) return "";
 
     const date = new Date(value);
-
     if (Number.isNaN(date.getTime())) return "";
 
     const year = date.getFullYear();
@@ -31,7 +31,6 @@ function formatDate(value) {
     if (!value) return "—";
 
     const date = new Date(value);
-
     if (Number.isNaN(date.getTime())) return "—";
 
     return date.toLocaleDateString("en-IN", {
@@ -45,7 +44,6 @@ function formatTime(value) {
     if (!value) return "—";
 
     const match = String(value).match(/^(\d{1,2}):(\d{2})/);
-
     if (!match) return value;
 
     const date = new Date();
@@ -74,9 +72,17 @@ function escapeHTML(value) {
     })[char]);
 }
 
-// ------------------------------
+function dateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+// ==========================================
 // PATIENT AVATAR
-// ------------------------------
+// ==========================================
 
 function getInitials(name) {
     return String(name || "Patient")
@@ -106,9 +112,9 @@ function getAvatarColor(name) {
     return colors[Math.abs(hash) % colors.length];
 }
 
-// ------------------------------
+// ==========================================
 // STATUS HELPERS
-// ------------------------------
+// ==========================================
 
 function getStatus(status) {
     const value = String(status || "Scheduled").toLowerCase();
@@ -128,7 +134,6 @@ function isUpcoming(appointment) {
     }
 
     const date = getDateKey(appointment.appointmentDate);
-
     if (!date) return false;
 
     const today = getDateKey(new Date());
@@ -142,7 +147,6 @@ function isPast(appointment) {
     }
 
     const date = getDateKey(appointment.appointmentDate);
-
     if (!date) return false;
 
     const today = getDateKey(new Date());
@@ -160,9 +164,9 @@ function getDoctorDisplayName(name) {
         : `Dr. ${doctor}`;
 }
 
-// ------------------------------
+// ==========================================
 // LOAD APPOINTMENTS
-// ------------------------------
+// ==========================================
 
 async function loadAppointments() {
     const tableBody = document.getElementById("appointmentTableBody");
@@ -209,14 +213,15 @@ async function loadAppointments() {
         `;
 
         document.getElementById("recordCount").textContent = "ERROR";
+
         document.getElementById("paginationInfo").textContent =
             "Unable to retrieve records.";
     }
 }
 
-// ------------------------------
+// ==========================================
 // DOCTOR FILTER
-// ------------------------------
+// ==========================================
 
 function populateDoctorFilter() {
     const select = document.getElementById("doctorFilter");
@@ -244,9 +249,9 @@ function populateDoctorFilter() {
     }
 }
 
-// ------------------------------
+// ==========================================
 // APPLY SEARCH AND FILTERS
-// ------------------------------
+// ==========================================
 
 function applyFilters() {
     const search = document
@@ -276,15 +281,11 @@ function applyFilters() {
         const status = getStatus(appointment.status);
         const appointmentDate = getDateKey(appointment.appointmentDate);
 
-        // SEARCH
-
         const matchesSearch =
             !search ||
             appointmentId.includes(search) ||
             patientName.includes(search) ||
             doctorName.includes(search);
-
-        // TAB FILTER
 
         let matchesView = true;
 
@@ -298,13 +299,8 @@ function applyFilters() {
             matchesView = status === "Cancelled";
         }
 
-        // DOCTOR FILTER
-
         const matchesDoctor =
-            !doctor ||
-            appointment.doctorName === doctor;
-
-        // DATE RANGE
+            !doctor || appointment.doctorName === doctor;
 
         const matchesFrom =
             !dateFrom ||
@@ -327,11 +323,17 @@ function applyFilters() {
 
     currentPage = 1;
     renderTable();
+
+    const calendar = document.getElementById("calendarView");
+
+    if (calendar && !calendar.hidden) {
+        renderCalendar();
+    }
 }
 
-// ------------------------------
+// ==========================================
 // SORTING
-// ------------------------------
+// ==========================================
 
 function sortAppointments() {
     const sortValue = document.getElementById("sortSelect").value;
@@ -369,9 +371,9 @@ function sortAppointments() {
     });
 }
 
-// ------------------------------
+// ==========================================
 // RENDER TABLE
-// ------------------------------
+// ==========================================
 
 function renderTable() {
     const container = document.getElementById("appointmentTableBody");
@@ -400,7 +402,6 @@ function renderTable() {
             </tr>
         `;
     } else {
-
         container.innerHTML = pageRecords.map(appointment => {
 
             const patient = appointment.patientName || "Unknown";
@@ -412,7 +413,6 @@ function renderTable() {
 
             return `
                 <tr>
-
                     <td>
                         <span class="appointment-id">
                             ${escapeHTML(appointmentId || "—")}
@@ -421,14 +421,12 @@ function renderTable() {
 
                     <td>
                         <div class="patient-cell">
-
                             <div class="patient-avatar"
                                 style="background:${avatar.bg};color:${avatar.text}">
                                 ${escapeHTML(getInitials(patient))}
                             </div>
 
                             <strong>${escapeHTML(patient)}</strong>
-
                         </div>
                     </td>
 
@@ -448,7 +446,6 @@ function renderTable() {
 
                     <td>
                         <div class="table-actions">
-
                             <a
                                 class="view-link"
                                 href="details.html?id=${encodeURIComponent(appointmentId)}"
@@ -463,16 +460,12 @@ function renderTable() {
                             >
                                 Delete
                             </button>
-
                         </div>
                     </td>
-
                 </tr>
             `;
         }).join("");
     }
-
-    // PAGINATION INFORMATION
 
     document.getElementById("paginationInfo").textContent =
         total === 0
@@ -492,12 +485,11 @@ function renderTable() {
         `${total} RECORDS`;
 }
 
-// ------------------------------
+// ==========================================
 // DELETE APPOINTMENT
-// ------------------------------
+// ==========================================
 
 async function deleteAppointment(appointmentId) {
-
     if (!appointmentId) {
         alert("Appointment ID is missing.");
         return;
@@ -535,15 +527,14 @@ async function deleteAppointment(appointmentId) {
     }
 }
 
-// ------------------------------
+// ==========================================
 // QUICK VIEW TABS
-// ------------------------------
+// ==========================================
 
 function setupTabs() {
     const buttons = document.querySelectorAll(".appointment-tab");
 
     buttons.forEach(button => {
-
         button.addEventListener("click", () => {
 
             buttons.forEach(btn => btn.classList.remove("active"));
@@ -557,9 +548,9 @@ function setupTabs() {
     });
 }
 
-// ------------------------------
+// ==========================================
 // FILTER EVENT LISTENERS
-// ------------------------------
+// ==========================================
 
 function setupFilters() {
 
@@ -606,12 +597,11 @@ function setupFilters() {
         .addEventListener("click", resetFilters);
 }
 
-// ------------------------------
+// ==========================================
 // RESET FILTERS
-// ------------------------------
+// ==========================================
 
 function resetFilters() {
-
     document.getElementById("searchInput").value = "";
     document.getElementById("doctorFilter").value = "";
     document.getElementById("dateFrom").value = "";
@@ -630,9 +620,9 @@ function resetFilters() {
     applyFilters();
 }
 
-// ------------------------------
+// ==========================================
 // PAGINATION
-// ------------------------------
+// ==========================================
 
 function setupPagination() {
 
@@ -659,12 +649,11 @@ function setupPagination() {
         });
 }
 
-// ------------------------------
+// ==========================================
 // CSV EXPORT
-// ------------------------------
+// ==========================================
 
 function exportCSV() {
-
     if (!filteredAppointments.length) {
         alert("There are no appointment records to export.");
         return;
@@ -693,7 +682,6 @@ function exportCSV() {
     function csvValue(value) {
         let text = String(value ?? "");
 
-        // Prevent spreadsheet formula injection.
         if (/^[\s]*[=+\-@]/.test(text)) {
             text = "'" + text;
         }
@@ -723,12 +711,11 @@ function exportCSV() {
     URL.revokeObjectURL(url);
 }
 
-// ------------------------------
+// ==========================================
 // PRINT RECORDS
-// ------------------------------
+// ==========================================
 
 function printRecords() {
-
     if (!filteredAppointments.length) {
         alert("There are no appointment records to print.");
         return;
@@ -758,6 +745,7 @@ function printRecords() {
         <html>
         <head>
             <title>XO Clinic - Appointment Records</title>
+
             <style>
                 body {
                     font-family: Arial, sans-serif;
@@ -797,9 +785,14 @@ function printRecords() {
                 }
             </style>
         </head>
+
         <body>
             <h1>XO Clinic</h1>
-            <p>Appointment Records | Generated ${new Date().toLocaleString("en-IN")}</p>
+
+            <p>
+                Appointment Records |
+                Generated ${new Date().toLocaleString("en-IN")}
+            </p>
 
             <table>
                 <thead>
@@ -813,6 +806,7 @@ function printRecords() {
                         <th>Reason</th>
                     </tr>
                 </thead>
+
                 <tbody>${rows}</tbody>
             </table>
 
@@ -828,12 +822,11 @@ function printRecords() {
     printWindow.document.close();
 }
 
-// ------------------------------
+// ==========================================
 // TABLE ACTIONS
-// ------------------------------
+// ==========================================
 
 function setupTableActions() {
-
     document.getElementById("appointmentTableBody")
         .addEventListener("click", event => {
 
@@ -845,9 +838,328 @@ function setupTableActions() {
         });
 }
 
-// ------------------------------
+// ==========================================
+// TABLE / CALENDAR VIEW TOGGLE
+// ==========================================
+
+function setupViewToggle() {
+    const tableButton = document.getElementById("tableViewBtn");
+    const calendarButton = document.getElementById("calendarViewBtn");
+
+    const tableContainer = document.querySelector(".table-container");
+    const pagination = document.querySelector(".pagination");
+    const calendar = document.getElementById("calendarView");
+
+    if (!tableButton || !calendarButton || !tableContainer || !calendar) {
+        console.error("View toggle elements are missing.");
+        return;
+    }
+
+    function showTable() {
+        tableContainer.hidden = false;
+
+        if (pagination) {
+            pagination.hidden = false;
+        }
+
+        calendar.hidden = true;
+
+        tableButton.classList.add("active");
+        calendarButton.classList.remove("active");
+    }
+
+    function showCalendar() {
+        tableContainer.hidden = true;
+
+        if (pagination) {
+            pagination.hidden = true;
+        }
+
+        calendar.hidden = false;
+
+        tableButton.classList.remove("active");
+        calendarButton.classList.add("active");
+
+        renderCalendar();
+    }
+
+    tableButton.addEventListener("click", showTable);
+    calendarButton.addEventListener("click", showCalendar);
+}
+
+// ==========================================
+// CALENDAR APPOINTMENT HELPERS
+// ==========================================
+
+function getCalendarAppointments(date) {
+    const key = dateKey(date);
+
+    return filteredAppointments.filter(appointment =>
+        getDateKey(appointment.appointmentDate) === key
+    );
+}
+
+// ==========================================
+// RENDER CALENDAR
+// ==========================================
+
+function renderCalendar() {
+    const grid = document.getElementById("calendarGrid");
+    const title = document.getElementById("calendarTitle");
+
+    if (!grid || !title) return;
+
+    grid.innerHTML = "";
+
+    if (calendarMode === "month") {
+        renderMonthView(grid, title);
+    } else if (calendarMode === "week") {
+        renderWeekView(grid, title);
+    } else {
+        renderDayView(grid, title);
+    }
+}
+
+// ==========================================
+// MONTH VIEW
+// ==========================================
+
+function renderMonthView(grid, title) {
+    const year = calendarDate.getFullYear();
+    const month = calendarDate.getMonth();
+
+    title.textContent = calendarDate.toLocaleDateString("en-IN", {
+        month: "long",
+        year: "numeric"
+    });
+
+    const firstDay = new Date(year, month, 1);
+    const startDay = firstDay.getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    grid.className = "calendar-grid month-grid";
+
+    weekdays.forEach(day => {
+        const heading = document.createElement("div");
+        heading.className = "calendar-weekday";
+        heading.textContent = day;
+        grid.appendChild(heading);
+    });
+
+    for (let i = 0; i < startDay; i++) {
+        const empty = document.createElement("div");
+        empty.className = "calendar-empty";
+        grid.appendChild(empty);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const appointments = getCalendarAppointments(date);
+
+        const cell = document.createElement("div");
+        cell.className = "calendar-day-cell";
+
+        if (dateKey(date) === dateKey(new Date())) {
+            cell.classList.add("today");
+        }
+
+        const dateNumber = document.createElement("div");
+        dateNumber.className = "calendar-date-number";
+        dateNumber.textContent = day;
+
+        cell.appendChild(dateNumber);
+
+        appointments.forEach(appointment => {
+            const item = document.createElement("div");
+            const status = getStatus(appointment.status).toLowerCase();
+
+            item.className = `calendar-appointment ${status}`;
+
+            item.textContent =
+                `${formatTime(appointment.appointmentTime)} ${appointment.patientName || "Patient"}`;
+
+            item.title =
+                `${appointment.patientName || "Patient"} - ${appointment.doctorName || "Unassigned"}`;
+
+            cell.appendChild(item);
+        });
+
+        grid.appendChild(cell);
+    }
+}
+
+// ==========================================
+// WEEK VIEW
+// ==========================================
+
+function renderWeekView(grid, title) {
+    const start = new Date(calendarDate);
+
+    start.setDate(start.getDate() - start.getDay());
+
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+
+    title.textContent =
+        `${start.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short"
+        })} – ${end.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        })}`;
+
+    grid.className = "calendar-grid week-grid";
+
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(start);
+        date.setDate(start.getDate() + i);
+
+        const cell = document.createElement("div");
+        cell.className = "calendar-day-cell";
+
+        if (dateKey(date) === dateKey(new Date())) {
+            cell.classList.add("today");
+        }
+
+        const heading = document.createElement("div");
+        heading.className = "calendar-date-number";
+
+        heading.textContent = date.toLocaleDateString("en-IN", {
+            weekday: "short",
+            day: "numeric"
+        });
+
+        cell.appendChild(heading);
+
+        getCalendarAppointments(date).forEach(appointment => {
+            const item = document.createElement("div");
+            const status = getStatus(appointment.status).toLowerCase();
+
+            item.className = `calendar-appointment ${status}`;
+
+            item.textContent =
+                `${formatTime(appointment.appointmentTime)} ${appointment.patientName || "Patient"}`;
+
+            cell.appendChild(item);
+        });
+
+        grid.appendChild(cell);
+    }
+}
+
+// ==========================================
+// DAY VIEW
+// ==========================================
+
+function renderDayView(grid, title) {
+    title.textContent = calendarDate.toLocaleDateString("en-IN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+
+    grid.className = "calendar-grid day-grid";
+
+    const appointments = getCalendarAppointments(calendarDate);
+
+    if (!appointments.length) {
+        grid.innerHTML = `
+            <div class="calendar-no-events">
+                No appointments scheduled for this day.
+            </div>
+        `;
+        return;
+    }
+
+    appointments.forEach(appointment => {
+        const item = document.createElement("div");
+        const status = getStatus(appointment.status).toLowerCase();
+
+        item.className = `calendar-day-appointment ${status}`;
+
+        item.innerHTML = `
+            <strong>${escapeHTML(formatTime(appointment.appointmentTime))}</strong>
+            <span>${escapeHTML(appointment.patientName || "Patient")}</span>
+            <small>${escapeHTML(appointment.doctorName || "Unassigned")}</small>
+            <span class="calendar-status">${escapeHTML(getStatus(appointment.status))}</span>
+        `;
+
+        grid.appendChild(item);
+    });
+}
+
+// ==========================================
+// CALENDAR CONTROLS
+// ==========================================
+
+function setupCalendar() {
+    const modeButtons = document.querySelectorAll(".calendar-mode-btn");
+
+    const previous = document.getElementById("calendarPrev");
+    const next = document.getElementById("calendarNext");
+    const today = document.getElementById("calendarToday");
+
+    modeButtons.forEach(button => {
+        button.addEventListener("click", () => {
+
+            const selectedMode = button.dataset.mode;
+
+            if (!["month", "week", "day"].includes(selectedMode)) {
+                return;
+            }
+
+            calendarMode = selectedMode;
+
+            modeButtons.forEach(btn => {
+                btn.classList.toggle("active", btn === button);
+            });
+
+            renderCalendar();
+        });
+    });
+
+    previous?.addEventListener("click", () => {
+
+        if (calendarMode === "month") {
+            calendarDate.setMonth(calendarDate.getMonth() - 1);
+        } else if (calendarMode === "week") {
+            calendarDate.setDate(calendarDate.getDate() - 7);
+        } else {
+            calendarDate.setDate(calendarDate.getDate() - 1);
+        }
+
+        renderCalendar();
+    });
+
+    next?.addEventListener("click", () => {
+
+        if (calendarMode === "month") {
+            calendarDate.setMonth(calendarDate.getMonth() + 1);
+        } else if (calendarMode === "week") {
+            calendarDate.setDate(calendarDate.getDate() + 7);
+        } else {
+            calendarDate.setDate(calendarDate.getDate() + 1);
+        }
+
+        renderCalendar();
+    });
+
+    today?.addEventListener("click", () => {
+        calendarDate = new Date();
+        renderCalendar();
+    });
+
+    renderCalendar();
+}
+
+// ==========================================
 // INITIALIZE
-// ------------------------------
+// ==========================================
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -856,6 +1168,9 @@ document.addEventListener("DOMContentLoaded", () => {
     setupPagination();
     setupTableActions();
 
+    setupViewToggle();
+    setupCalendar();
+
     document.getElementById("exportCSV")
         .addEventListener("click", exportCSV);
 
@@ -863,4 +1178,5 @@ document.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", printRecords);
 
     loadAppointments();
+
 });

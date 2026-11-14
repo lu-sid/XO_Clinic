@@ -19,7 +19,35 @@
         .appointments-page {
             padding-bottom: 25px;
         }
+        .calendar-view-switch {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    z-index: 10;
+}
 
+.view-switch-btn {
+    position: relative;
+    z-index: 11;
+    pointer-events: auto;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #64748b;
+    padding: 10px 16px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.view-switch-btn:hover,
+.view-switch-btn.active {
+    background: #e9f9f6;
+    color: #0d9488;
+    border-color: #a7e5dc;
+}
         .page-header {
             margin-bottom: 28px;
         }
@@ -550,40 +578,95 @@
             <!-- SORTING AND EXPORT -->
 
             <div class="toolbar">
+    <div class="toolbar-left">
 
-                <div class="toolbar-left">
+        <div class="filter-field sort-field">
+            <label for="sortSelect">SORT BY</label>
+            <select id="sortSelect" class="filter-control">
+                <option value="date-desc">Newest appointment</option>
+                <option value="date-asc">Oldest appointment</option>
+                <option value="name-asc">Patient name (A–Z)</option>
+                <option value="name-desc">Patient name (Z–A)</option>
+                <option value="updated-desc">Recently updated</option>
+            </select>
+        </div>
 
-                    <div class="filter-field sort-field">
-                        <label for="sortSelect">SORT BY</label>
-                        <select id="sortSelect" class="filter-control">
-                            <option value="date-desc">Newest appointment</option>
-                            <option value="date-asc">Oldest appointment</option>
-                            <option value="name-asc">Patient name (A–Z)</option>
-                            <option value="name-desc">Patient name (Z–A)</option>
-                            <option value="updated-desc">Recently updated</option>
-                        </select>
-                    </div>
+        <div class="calendar-view-switch">
+            <button type="button" id="tableViewBtn" class="view-switch-btn active">
+                ☷ Table
+            </button>
+            <button type="button" id="calendarViewBtn" class="view-switch-btn">
+                ▦ Calendar
+            </button>
+        </div>
 
-                </div>
+    </div>
 
-                <div class="toolbar-right">
+    <div class="toolbar-right">
 
-                    <button type="button" id="exportCSV" class="action-button secondary">
-                        ↓ Export CSV
-                    </button>
+        <button type="button" id="exportCSV" class="action-button secondary">
+            ↓ Export CSV
+        </button>
 
-                    <button type="button" id="printRecords" class="action-button secondary">
-                        Print records
-                    </button>
+        <button type="button" id="printRecords" class="action-button secondary">
+            Print records
+        </button>
 
-                    <a href="add-appointment.html" class="action-button" style="display:flex;align-items:center;text-decoration:none;">
-                        + New appointment
-                    </a>
+        <a href="add-appointment.html"
+           class="action-button"
+           style="display:flex;align-items:center;text-decoration:none;">
+            + New appointment
+        </a>
 
-                </div>
+    </div>
+</div>
+<!-- CALENDAR VIEW -->
 
-            </div>
+<section id="calendarView" class="calendar-view" hidden>
 
+    <div class="calendar-toolbar">
+
+        <div class="calendar-navigation">
+            <button type="button" id="calendarPrev" class="calendar-nav-btn">
+                &#8592;
+            </button>
+
+            <button type="button" id="calendarToday" class="calendar-today-btn">
+                Today
+            </button>
+
+            <button type="button" id="calendarNext" class="calendar-nav-btn">
+                &#8594;
+            </button>
+
+            <h3 id="calendarTitle">Calendar</h3>
+        </div>
+
+        <div class="calendar-mode-switch">
+            <button type="button" class="calendar-mode-btn active" data-mode="month">
+                Month
+            </button>
+
+            <button type="button" class="calendar-mode-btn" data-mode="week">
+                Week
+            </button>
+
+            <button type="button" class="calendar-mode-btn" data-mode="day">
+                Day
+            </button>
+        </div>
+
+    </div>
+
+    <div class="calendar-legend">
+        <span><i class="legend-scheduled"></i> Scheduled</span>
+        <span><i class="legend-completed"></i> Completed</span>
+        <span><i class="legend-cancelled"></i> Cancelled</span>
+    </div>
+
+    <div id="calendarGrid" class="calendar-grid"></div>
+
+</section>
             <!-- APPOINTMENT TABLE -->
 
             <div class="table-container">
