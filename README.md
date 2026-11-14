@@ -240,4 +240,4 @@ Through this project, practical experience is gained in:
 
 **Domain:** Web Development and Database Management
 
-**GitHub:** [XO Clinic Repository](https://github.com/lu-sid/Clinic-Appointment-Management-System-)
+**GitHub:** [XO Clinic Repository](https://github.com/lu-sid/XO_Clinic)
